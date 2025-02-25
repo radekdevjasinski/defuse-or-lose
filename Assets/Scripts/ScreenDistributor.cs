@@ -1,45 +1,88 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class ScreenDistributor : MonoBehaviour
 {
     [Header("Refs")]
-    public SpriteRenderer tabletScreen;
-    
-    [Header("View")]
-    public int columns; // Liczba kolumn
-    private int rows;   // Liczba wierszy (obliczana na podstawie ilości obiektów)
-    
-    private float spacingX;
-    private float spacingY;
+    public PuzzleController puzzleController;
+    public Transform iconsContainer;
+    public GameObject puzzleIconEmpty;
 
-    public void DistributeChildren()
+    private int currentPuzzleIndex = 0;
+    private GameObject activePuzzle;
+    [Header("Icons")]
+    public List<GameObject> puzzleIcons = new();
+
+    private void Start()
     {
-        int count = transform.childCount;
-        if (count == 0 || tabletScreen == null) return;
-
-        Vector2 screenSize = tabletScreen.bounds.size;
-
-        // Obliczenie liczby wierszy na podstawie ilości obiektów
-        rows = Mathf.CeilToInt((float)count / columns);
-
-        // Pobranie rozmiaru pierwszego dziecka (zakładamy, że wszystkie są podobne)
-        Vector2 size = transform.GetChild(0).GetComponentInChildren<RectTransform>().sizeDelta;
-
-        // Obliczenie odstępów (zabezpieczenie przed dzieleniem przez 0)
-        spacingX = (columns > 1) ? (screenSize.x - (columns * size.x)) / (columns - 1) : 0;
-        spacingY = (rows > 1) ? (screenSize.y - (rows * size.y)) / (rows - 1) : 0;
-
-        // Pobranie pozycji lewego górnego rogu ekranu
-        Vector3 topLeft = tabletScreen.bounds.min + new Vector3(size.x / 2, screenSize.y - size.y / 2, 0);
-
-        for (int i = 0; i < count; i++)
+        puzzleController = GetComponent<PuzzleController>();
+    }
+    public void DisplayPuzzle(GameObject puzzlePrefab)
+    {
+        if (activePuzzle != null)
         {
-            int row = i / columns;  // Numer wiersza
-            int col = i % columns;  // Numer kolumny
+            Destroy(activePuzzle);
+        }
 
-            // Obliczanie pozycji każdego elementu
-            Vector3 newPosition = topLeft + new Vector3(col * (size.x + spacingX), -row * (size.y + spacingY), 0);
-            transform.GetChild(i).position = newPosition; // Ustawienie pozycji globalnej
+        activePuzzle = Instantiate(puzzlePrefab, transform);
+    }
+
+    public void NextPuzzleRight()
+    {
+        if (puzzleController.activePuzzles.Count == 0) return;
+
+        currentPuzzleIndex++;
+        if (currentPuzzleIndex >= puzzleController.activePuzzles.Count)
+        {
+            currentPuzzleIndex = 0;
+        }
+
+        DisplayPuzzle(puzzleController.activePuzzles[currentPuzzleIndex]);
+        UpdateIcons();
+    }
+
+    public void NextPuzzleLeft()
+    {
+        if (puzzleController.activePuzzles.Count == 0) return;
+
+        currentPuzzleIndex--;
+        if (currentPuzzleIndex < 0)
+        {
+            currentPuzzleIndex = puzzleController.activePuzzles.Count - 1;
+        }
+
+        DisplayPuzzle(puzzleController.activePuzzles[currentPuzzleIndex]);
+        UpdateIcons();
+
+    }
+    public void SpawnIcons()
+    {
+        foreach (Transform child in iconsContainer)
+        {
+            Destroy(child.gameObject);
+        }
+        puzzleIcons.Clear();
+
+        for (int i = 0; i < puzzleController.activePuzzles.Count; i++)
+        {
+            GameObject icon = Instantiate(puzzleIconEmpty, iconsContainer);
+            icon.transform.localScale = Vector3.one; 
+            puzzleIcons.Add(icon);
+
+        }
+    }
+    public void UpdateIcons()
+    {
+        for (int i=0; i < puzzleIcons.Count; i++)
+        {
+            if(i == currentPuzzleIndex)
+            {
+                puzzleIcons[i].transform.localScale = Vector3.one * 1.5f;
+            }
+            else
+            {
+                puzzleIcons[i].transform.localScale = Vector3.one; 
+            }
         }
     }
 }
