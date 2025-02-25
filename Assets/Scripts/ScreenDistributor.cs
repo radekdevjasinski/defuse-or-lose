@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class ScreenDistributor : MonoBehaviour
 {
@@ -38,7 +39,7 @@ public class ScreenDistributor : MonoBehaviour
         }
 
         DisplayPuzzle(puzzleController.activePuzzles[currentPuzzleIndex]);
-        UpdateIcons();
+        SpawnIcons();
     }
 
     public void NextPuzzleLeft()
@@ -52,7 +53,7 @@ public class ScreenDistributor : MonoBehaviour
         }
 
         DisplayPuzzle(puzzleController.activePuzzles[currentPuzzleIndex]);
-        UpdateIcons();
+        SpawnIcons();
 
     }
     public void SpawnIcons()
@@ -66,23 +67,16 @@ public class ScreenDistributor : MonoBehaviour
         for (int i = 0; i < puzzleController.activePuzzles.Count; i++)
         {
             GameObject icon = Instantiate(puzzleIconEmpty, iconsContainer);
-            icon.transform.localScale = Vector3.one; 
-            puzzleIcons.Add(icon);
-
-        }
-    }
-    public void UpdateIcons()
-    {
-        for (int i=0; i < puzzleIcons.Count; i++)
-        {
             if(i == currentPuzzleIndex)
             {
-                puzzleIcons[i].transform.localScale = Vector3.one * 1.5f;
+                icon.transform.localScale = Vector3.one * 1.5f;
             }
             else
             {
-                puzzleIcons[i].transform.localScale = Vector3.one; 
+                icon.transform.localScale = Vector3.one; 
             }
+            puzzleIcons.Add(icon);
+
         }
     }
 }

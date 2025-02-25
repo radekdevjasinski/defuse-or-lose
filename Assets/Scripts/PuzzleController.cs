@@ -16,7 +16,6 @@ public class PuzzleController : MonoBehaviour
         ChoosePuzzles();
         screenDistributor.DisplayPuzzle(activePuzzles[0]);
         screenDistributor.SpawnIcons();
-        screenDistributor.UpdateIcons();
     }
 
     void LoadPrefabs()
