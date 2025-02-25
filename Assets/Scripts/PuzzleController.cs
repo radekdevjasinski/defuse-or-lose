@@ -3,17 +3,20 @@ using System.Collections.Generic;
 
 public class PuzzleController : MonoBehaviour
 {
-    public string folderPath = "Puzzles"; // Ścieżka w folderze Resources
-    public int numberOfPuzzles = 6; // Ile prefabów utworzyć
+    public string folderPath = "Puzzles";
+    public int numberOfPuzzles = 6; 
     private List<GameObject> puzzlePrefabs = new List<GameObject>();
+    public List<GameObject> activePuzzles = new List<GameObject>();
     private ScreenDistributor screenDistributor;
 
     void Start()
     {
         screenDistributor = GetComponent<ScreenDistributor>();
         LoadPrefabs();
-        SpawnPuzzles();
-        screenDistributor.DistributeChildren();
+        ChoosePuzzles();
+        screenDistributor.DisplayPuzzle(activePuzzles[0]);
+        screenDistributor.SpawnIcons();
+        screenDistributor.UpdateIcons();
     }
 
     void LoadPrefabs()
@@ -31,15 +34,21 @@ public class PuzzleController : MonoBehaviour
         }
     }
 
-    void SpawnPuzzles()
+    void ChoosePuzzles()
     {
         if (puzzlePrefabs.Count == 0) return;
+        
+        activePuzzles.Clear(); 
+        List<GameObject> availablePrefabs = new List<GameObject>(puzzlePrefabs);
 
-        for (int i = 0; i < numberOfPuzzles; i++)
+        for (int i = 0; i < numberOfPuzzles && availablePrefabs.Count > 0; i++)
         {
-            GameObject randomPrefab = puzzlePrefabs[Random.Range(0, puzzlePrefabs.Count)];
-            GameObject spawnedPuzzle = Instantiate(randomPrefab, this.transform);
-            spawnedPuzzle.name = spawnedPuzzle.name + "_" + i;
+            int randomIndex = Random.Range(0, availablePrefabs.Count);
+            GameObject selectedPrefab = availablePrefabs[randomIndex];
+
+            activePuzzles.Add(selectedPrefab);
+            availablePrefabs.RemoveAt(randomIndex); 
         }
     }
+
 }
