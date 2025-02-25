@@ -2,30 +2,48 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+using System.Linq;
 
-public class CipherPuzzle : MonoBehaviour
+public class CipherPuzzle : PuzzleBase
 {
     public LetterField[] letterFields;
     public TextMeshProUGUI encryptedText;
     public Image statusLight;
     public Button checkButton;
+    public CipherGenerator cipherGenerator;
 
-    private string correctWord = "CECHA";
-    private List<char> extraLetters = new List<char> { 'X', 'M', 'T', 'B', 'P' };
+    private string correctWord;
+    private string encryptedWord;
+    private List<char> allLetters = new List<char>("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 
     private void Start()
     {
-        InitializePuzzle();
+        Initialize();
         checkButton.onClick.AddListener(CheckSolution);
     }
 
-    private void InitializePuzzle()
+    public override void Initialize()
     {
-        encryptedText.text = "???";
+        encryptedText.text = cipherGenerator.GenerateCipher(out correctWord);
 
-        for (int i = 0; i < correctWord.Length; i++)
+        List<char> availableLetters = new List<char>(correctWord);
+
+        List<char> allLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToList();
+        allLetters.RemoveAll(c => availableLetters.Contains(c));
+
+        System.Random random = new System.Random();
+        while (availableLetters.Count < 9)
         {
-            letterFields[i].Initialize(correctWord[i], extraLetters);
+            char extra = allLetters[random.Next(allLetters.Count)];
+            availableLetters.Add(extra);
+            allLetters.Remove(extra);
+        }
+
+        availableLetters = availableLetters.OrderBy(x => random.Next()).ToList();
+
+        for (int i = 0; i < letterFields.Length; i++)
+        {
+            letterFields[i].Initialize(availableLetters[i], availableLetters);
         }
 
         statusLight.color = Color.white;
@@ -42,10 +60,16 @@ public class CipherPuzzle : MonoBehaviour
         if (playerWord == correctWord)
         {
             statusLight.color = Color.green;
+            OnComplete();
         }
         else
         {
             statusLight.color = Color.red;
         }
+    }
+    protected override void OnComplete()
+    {
+        base.OnComplete();
+        Debug.Log("Cipher puzzle solved!");
     }
 }
