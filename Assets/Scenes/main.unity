@@ -911,6 +911,7 @@ MonoBehaviour:
   puzzleController: {fileID: 885655528}
   iconsContainer: {fileID: 1848781902}
   puzzleIconEmpty: {fileID: 7009518541862058415, guid: bfdc642eb3b978e499f6c02d096aa319, type: 3}
+  puzzleIcons: []
 --- !u!114 &885655528
 MonoBehaviour:
   m_ObjectHideFlags: 0
