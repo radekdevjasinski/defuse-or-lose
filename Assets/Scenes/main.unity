@@ -5460,6 +5460,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 486459332}
+  - component: {fileID: 486459333}
   m_Layer: 0
   m_Name: Bomb
   m_TagString: Untagged
@@ -5492,6 +5493,28 @@ Transform:
   - {fileID: 1596251572}
   m_Father: {fileID: 1941486224}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &486459333
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 486459331}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74aa1372d3a371344bf557620e70f824, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serialCodeLenght: 7
+  serialcodeText: {fileID: 1958659313}
+  serialCode: 
+  batteryImage: {fileID: 826531132}
+  batteryBars: 0
+  batterySprites:
+  - {fileID: 21300000, guid: 5bcc5bc9c7f77444fb130595cabf7830, type: 3}
+  - {fileID: 21300000, guid: e10e0718d1a48bc4f9b41f8a5e307bc0, type: 3}
+  - {fileID: 21300000, guid: 46baf7bcae116814abb91f983c912c52, type: 3}
+  - {fileID: 21300000, guid: 0b30db5d01bfc5e4e8ef34c2f83d17dd, type: 3}
 --- !u!1 &488646970
 GameObject:
   m_ObjectHideFlags: 0
