@@ -8,7 +8,9 @@ using UnityEngine.UI;
 public enum ButtonType
 {
     Play = 0,
-    Stop = 1
+    Stop = 1,
+    Record = 2,
+    Heart = 3
 }
 
 public class InitializeButton : MonoBehaviour
@@ -23,6 +25,12 @@ public class InitializeButton : MonoBehaviour
                 break;
             case (ButtonType)1:
                 button.AddComponent<ButtonPuzzleStop>();
+                break;
+            case (ButtonType)2:
+                button.AddComponent<ButtonPuzzleRecord>();
+                break;
+            case (ButtonType)3:
+                button.AddComponent<ButtonPuzzleHeart>();
                 break;
             default: break;
         }

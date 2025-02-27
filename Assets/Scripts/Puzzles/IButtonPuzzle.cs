@@ -4,7 +4,6 @@ using UnityEngine.EventSystems;
 using System;
 using System.Collections;
 
-
 public class ButtonPuzzle : MonoBehaviour
 {
     protected Button button;
@@ -116,6 +115,72 @@ public class ButtonPuzzleStop : ButtonPuzzle
         else
         {
             buttonPuzzleManager.ButtonAnswer(false);
+        }
+    }
+}
+public class ButtonPuzzleRecord : ButtonPuzzle
+{
+    private string timerTime;
+    private static readonly int answerNumber = 4;
+    public override void ExecutePuzzle()
+    {
+        timerTime = buttonPuzzleManager.bombController.timerText.text;
+        if (CheckTimer())
+        {
+            buttonPuzzleManager.ButtonAnswer(true);
+        }
+        else
+        {
+            buttonPuzzleManager.ButtonAnswer(false);
+        }
+    }
+    bool CheckTimer()
+    {
+        for (int i = 0; i < timerTime.Length; i++)
+        {
+            if (Char.IsDigit(timerTime[i]))
+            {
+                if(timerTime[i] == answerNumber.ToString()[0])
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+}
+public class ButtonPuzzleHeart : ButtonPuzzle
+{
+    private static readonly float winTime = 15f; 
+    private float timeSinceLastPress = 0f;
+
+    public override void Start()
+    {
+        base.Start();
+        StartCoroutine(CheckWinCondition());
+    }
+
+    void Update()
+    {
+        timeSinceLastPress += Time.deltaTime;
+    }
+
+    public override void ExecutePuzzle()
+    {
+        buttonPuzzleManager.ButtonAnswer(false);
+
+    }
+
+    private IEnumerator CheckWinCondition()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(1f);
+            if (timeSinceLastPress >= winTime)
+            {
+                buttonPuzzleManager.ButtonAnswer(true);
+                yield break;
+            }
         }
     }
 }
