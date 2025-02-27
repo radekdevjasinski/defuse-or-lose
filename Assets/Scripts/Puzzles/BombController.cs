@@ -23,6 +23,10 @@ public class BombController : MonoBehaviour
     private float blinkTime = 0f;  
     private bool isColonVisible = true; 
 
+    [Header("Strikes")]
+    public GameObject strikeUI;
+    public Transform strikeParent;
+    public int strikes;
 
     void Start()
     {
@@ -31,6 +35,9 @@ public class BombController : MonoBehaviour
 
         batteryBars = Random.Range(0, batterySprites.Count) + 1;
         batteryImage.sprite = batterySprites[batteryBars-1];
+
+        strikes = 0;
+        WriteStrikes();
     }
     void Update()
     {
@@ -72,5 +79,26 @@ public class BombController : MonoBehaviour
 
         return serialKey.ToString();
     }
+    public void AddStrike()
+    {
+        strikes++;
+        if (strikes == 3)
+        {
+            //boom
+        }
+        WriteStrikes();
+    }
+    void WriteStrikes()
+    {
+        foreach (Transform child in strikeParent)
+        {
+            Destroy(child.gameObject);
+        }
+        for (int i = 0; i < strikes; i++)
+        {
+            Instantiate(strikeUI, strikeParent);
+        }
+    }
+
 }
 
