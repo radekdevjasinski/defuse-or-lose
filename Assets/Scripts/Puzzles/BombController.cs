@@ -6,6 +6,18 @@ using System.Text;
 
 public class BombController : MonoBehaviour
 {
+    public static BombController instance;
+    void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
     [Header("Serial Code")]
     public int serialCodeLenght;
     [SerializeField] private TMP_Text serialcodeText;
@@ -19,7 +31,7 @@ public class BombController : MonoBehaviour
     [Header("Timer")]
     public TMP_Text timerText; 
     public float timeRemaining;
-    private bool timerRunning = true;
+    public bool timerRunning = true;
     private float blinkTime = 0f;  
     private bool isColonVisible = true; 
 
@@ -49,7 +61,6 @@ public class BombController : MonoBehaviour
             {
                 timeRemaining = 0f;
                 timerRunning = false;
-                //boom
             }
 
             int minutes = Mathf.FloorToInt(timeRemaining / 60f);
@@ -82,10 +93,6 @@ public class BombController : MonoBehaviour
     public void AddStrike()
     {
         strikes++;
-        if (strikes == 3)
-        {
-            //boom
-        }
         WriteStrikes();
     }
     void WriteStrikes()

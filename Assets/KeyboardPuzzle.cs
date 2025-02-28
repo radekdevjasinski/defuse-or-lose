@@ -92,13 +92,13 @@ public class KeyboardPuzzle : PuzzleBase
     }
     public void CheckAnswer()
     {
-        if (input == puzzleAnswer)
+        if (string.Equals(input, puzzleAnswer, StringComparison.OrdinalIgnoreCase))
         {
             OnComplete();
         }
         else
         {
-            bombController.AddStrike();
+            OnFail();
         }
     }
     void GenerateAnswer()

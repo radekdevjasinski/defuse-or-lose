@@ -8,13 +8,11 @@ public class CipherPuzzle : PuzzleBase
 {
     public LetterField[] letterFields;
     public TextMeshProUGUI encryptedText;
-    public Image statusLight;
     public Button checkButton;
     public CipherGenerator cipherGenerator;
 
     private string correctWord;
-    private string encryptedWord;
-    private List<char> allLetters = new List<char>("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+    private List<char> allLetters;
 
     private void Start()
     {
@@ -45,8 +43,6 @@ public class CipherPuzzle : PuzzleBase
         {
             letterFields[i].Initialize(availableLetters[i], availableLetters);
         }
-
-        statusLight.color = Color.white;
     }
 
     private void CheckSolution()
@@ -56,20 +52,13 @@ public class CipherPuzzle : PuzzleBase
         {
             playerWord += field.GetCurrentLetter();
         }
-
         if (playerWord == correctWord)
         {
-            statusLight.color = Color.green;
             OnComplete();
         }
         else
         {
-            statusLight.color = Color.red;
+            OnFail();
         }
-    }
-    protected override void OnComplete()
-    {
-        base.OnComplete();
-        Debug.Log("Cipher puzzle solved!");
     }
 }
