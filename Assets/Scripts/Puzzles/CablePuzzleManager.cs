@@ -14,6 +14,7 @@ public class CablePuzzleManager : MonoBehaviour
     private Dictionary<int, int> expectedConnections = new Dictionary<int, int>();
     private Dictionary<int, int> actualConnections = new Dictionary<int, int>();
 
+
     void Awake()
     {
         Instance = this;
@@ -232,25 +233,25 @@ void CalculateExpectedConnections()
         }
     }
 
-    void ResetPuzzle()
+void ResetPuzzle()
+{
+    Cable[] cables = FindObjectsByType<Cable>(FindObjectsSortMode.None);
+    foreach (Cable cable in cables)
     {
-        Cable[] cables = FindObjectsOfType<Cable>();
-        foreach (Cable cable in cables)
-        {
-            Destroy(cable.gameObject);
-        }
-
-        actualConnections.Clear();
-        expectedConnections.Clear();
-
-        RightCableSlot[] rightSlots = FindObjectsOfType<RightCableSlot>();
-        foreach (RightCableSlot slot in rightSlots)
-        {
-            slot.isUsed = false;
-        }
-
-        Debug.Log("Puzzle reset. Wszystkie sloty zostały wyczyszczone.");
-        CalculateExpectedConnections();
-        PrintExpectedConnections();
+        Destroy(cable.gameObject);
     }
+
+    actualConnections.Clear();
+    expectedConnections.Clear();
+
+    RightCableSlot[] rightSlots = FindObjectsByType<RightCableSlot>(FindObjectsSortMode.None);
+    foreach (RightCableSlot slot in rightSlots)
+    {
+        slot.isUsed = false;
+    }
+
+    Debug.Log("Puzzle reset. Wszystkie sloty zostały wyczyszczone.");
+    CalculateExpectedConnections();
+    PrintExpectedConnections();
+}
 }
