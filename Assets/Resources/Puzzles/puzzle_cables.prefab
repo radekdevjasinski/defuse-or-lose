@@ -89,6 +89,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isUsed: 0
+  rightSlotIndex: 4
 --- !u!1 &448988303969723042
 GameObject:
   m_ObjectHideFlags: 0
@@ -178,6 +179,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cablePrefab: {fileID: 8618869003447316204, guid: 4276a0f30ea4f964abd871855a73733b, type: 3}
+  leftSlotIndex: 0
 --- !u!1 &1075303242191437175
 GameObject:
   m_ObjectHideFlags: 0
@@ -211,6 +213,7 @@ RectTransform:
   m_Children:
   - {fileID: 2365678971536861742}
   - {fileID: 523997464120351334}
+  - {fileID: 4682861011016965763}
   m_Father: {fileID: 9111337035206512002}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -370,6 +373,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isUsed: 0
+  rightSlotIndex: 3
 --- !u!1 &1140189207169794735
 GameObject:
   m_ObjectHideFlags: 0
@@ -459,6 +463,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cablePrefab: {fileID: 8618869003447316204, guid: 4276a0f30ea4f964abd871855a73733b, type: 3}
+  leftSlotIndex: 4
 --- !u!1 &2245998445512991018
 GameObject:
   m_ObjectHideFlags: 0
@@ -535,6 +540,55 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &3450785266758077087
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4682861011016965763}
+  - component: {fileID: 4350112336958582952}
+  m_Layer: 5
+  m_Name: PuzzleManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &4682861011016965763
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3450785266758077087}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5353257918840003467}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &4350112336958582952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3450785266758077087}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3a6ec77d8fb0d64b806a510a214389e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bombController: {fileID: 0}
 --- !u!1 &3537538042447192920
 GameObject:
   m_ObjectHideFlags: 0
@@ -573,7 +627,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -0.72}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1103008327859947865
@@ -767,6 +821,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cablePrefab: {fileID: 8618869003447316204, guid: 4276a0f30ea4f964abd871855a73733b, type: 3}
+  leftSlotIndex: 1
 --- !u!1 &4482693022825258829
 GameObject:
   m_ObjectHideFlags: 0
@@ -856,6 +911,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cablePrefab: {fileID: 8618869003447316204, guid: 4276a0f30ea4f964abd871855a73733b, type: 3}
+  leftSlotIndex: 3
 --- !u!1 &4699606729125525313
 GameObject:
   m_ObjectHideFlags: 0
@@ -945,6 +1001,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isUsed: 0
+  rightSlotIndex: 1
 --- !u!1 &4987594481337917529
 GameObject:
   m_ObjectHideFlags: 0
@@ -1066,6 +1123,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isUsed: 0
+  rightSlotIndex: 2
 --- !u!1 &7160004171558838034
 GameObject:
   m_ObjectHideFlags: 0
@@ -1155,6 +1213,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cablePrefab: {fileID: 8618869003447316204, guid: 4276a0f30ea4f964abd871855a73733b, type: 3}
+  leftSlotIndex: 2
 --- !u!1 &7339054523425677050
 GameObject:
   m_ObjectHideFlags: 0
@@ -1193,7 +1252,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -0.72}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &9150360424961505400
@@ -1311,3 +1370,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isUsed: 0
+  rightSlotIndex: 0

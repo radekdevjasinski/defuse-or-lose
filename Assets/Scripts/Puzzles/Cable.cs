@@ -12,7 +12,7 @@ public class Cable : MonoBehaviour
         lr.positionCount = 2;
         lr.numCapVertices = 10;
         lr.numCornerVertices = 10;
-        Debug.Log("[Cable] Awake: LineRenderer initialized.");
+        //Debug.Log("[Cable] Awake: LineRenderer initialized.");
     }
 
     void Update()

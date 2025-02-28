@@ -18,8 +18,13 @@ public class LetterField : MonoBehaviour
 
     public void ChangeLetter(int direction)
     {
+        char previousLetter = availableLetters[currentIndex];
         currentIndex = (currentIndex + direction + availableLetters.Count) % availableLetters.Count;
+        char newLetter = availableLetters[currentIndex];
+        
         letterText.text = availableLetters[currentIndex].ToString();
+
+        Debug.Log($"Zmieniono literę: {previousLetter} -> {newLetter}");
     }
 
     public char GetCurrentLetter()

@@ -22,16 +22,19 @@ public class CipherPuzzle : PuzzleBase
         checkButton.onClick.AddListener(CheckSolution);
     }
 
-    public override void Initialize()
-    {
-        encryptedText.text = cipherGenerator.GenerateCipher(out correctWord);
+public override void Initialize()
+{
+    encryptedText.text = cipherGenerator.GenerateCipher(out correctWord);
 
-        List<char> availableLetters = new List<char>(correctWord);
+    System.Random random = new System.Random();
+
+    for (int i = 0; i < letterFields.Length; i++)
+    {
+        List<char> availableLetters = new List<char> { correctWord[i] };
 
         List<char> allLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToList();
-        allLetters.RemoveAll(c => availableLetters.Contains(c));
+        allLetters.Remove(correctWord[i]);
 
-        System.Random random = new System.Random();
         while (availableLetters.Count < 9)
         {
             char extra = allLetters[random.Next(allLetters.Count)];
@@ -41,13 +44,15 @@ public class CipherPuzzle : PuzzleBase
 
         availableLetters = availableLetters.OrderBy(x => random.Next()).ToList();
 
-        for (int i = 0; i < letterFields.Length; i++)
-        {
-            letterFields[i].Initialize(availableLetters[i], availableLetters);
-        }
+        Debug.Log($"Pole {i + 1}: {correctWord[i]} | Lista wyboru: {string.Join(", ", availableLetters)}");
 
-        statusLight.color = Color.white;
+        letterFields[i].Initialize(correctWord[i], availableLetters);
     }
+
+    statusLight.color = Color.white;
+}
+
+
 
     private void CheckSolution()
     {
