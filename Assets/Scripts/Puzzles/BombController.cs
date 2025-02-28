@@ -6,6 +6,18 @@ using System.Text;
 
 public class BombController : MonoBehaviour
 {
+    public static BombController instance;
+    void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
     [Header("Serial Code")]
     public int serialCodeLenght;
     [SerializeField] private TMP_Text serialcodeText;
@@ -19,10 +31,14 @@ public class BombController : MonoBehaviour
     [Header("Timer")]
     public TMP_Text timerText; 
     public float timeRemaining;
-    private bool timerRunning = true;
+    public bool timerRunning = true;
     private float blinkTime = 0f;  
     private bool isColonVisible = true; 
 
+    [Header("Strikes")]
+    public GameObject strikeUI;
+    public Transform strikeParent;
+    public int strikes;
 
     void Start()
     {
@@ -31,6 +47,9 @@ public class BombController : MonoBehaviour
 
         batteryBars = Random.Range(0, batterySprites.Count) + 1;
         batteryImage.sprite = batterySprites[batteryBars-1];
+
+        strikes = 0;
+        WriteStrikes();
     }
     void Update()
     {
@@ -42,7 +61,6 @@ public class BombController : MonoBehaviour
             {
                 timeRemaining = 0f;
                 timerRunning = false;
-                //boom
             }
 
             int minutes = Mathf.FloorToInt(timeRemaining / 60f);
@@ -72,5 +90,22 @@ public class BombController : MonoBehaviour
 
         return serialKey.ToString();
     }
+    public void AddStrike()
+    {
+        strikes++;
+        WriteStrikes();
+    }
+    void WriteStrikes()
+    {
+        foreach (Transform child in strikeParent)
+        {
+            Destroy(child.gameObject);
+        }
+        for (int i = 0; i < strikes; i++)
+        {
+            Instantiate(strikeUI, strikeParent);
+        }
+    }
+
 }
 

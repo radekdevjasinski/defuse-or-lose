@@ -1,12 +1,21 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+public class Puzzle
+{
+    public GameObject prefab;
+    public bool isCompleted = false;
+    public Puzzle(GameObject prefab)
+    {
+        this.prefab = prefab;
+    }
+}
 public class PuzzleController : MonoBehaviour
 {
     public string folderPath = "Puzzles";
-    public int numberOfPuzzles = 6; 
+    public int numberOfPuzzles = 6;
     private List<GameObject> puzzlePrefabs = new List<GameObject>();
-    public List<GameObject> activePuzzles = new List<GameObject>();
+    public List<Puzzle> activePuzzles = new List<Puzzle>();
     private ScreenDistributor screenDistributor;
 
     void Start()
@@ -14,7 +23,7 @@ public class PuzzleController : MonoBehaviour
         screenDistributor = GetComponent<ScreenDistributor>();
         LoadPrefabs();
         ChoosePuzzles();
-        screenDistributor.DisplayPuzzle(activePuzzles[0]);
+        screenDistributor.DisplayPuzzle(activePuzzles[0].prefab);
         screenDistributor.SpawnIcons();
     }
 
@@ -44,10 +53,9 @@ public class PuzzleController : MonoBehaviour
         {
             int randomIndex = Random.Range(0, availablePrefabs.Count);
             GameObject selectedPrefab = availablePrefabs[randomIndex];
-
-            activePuzzles.Add(selectedPrefab);
+            Puzzle puzzle = new Puzzle(selectedPrefab);
+            activePuzzles.Add(puzzle);
             availablePrefabs.RemoveAt(randomIndex); 
         }
     }
-
 }

@@ -2,13 +2,16 @@ using UnityEngine;
 
 public abstract class PuzzleBase : MonoBehaviour
 {
-    public bool isCompleted { get; protected set; } = false;
+    public PuzzleController puzzleController;
 
     public abstract void Initialize();
 
     protected virtual void OnComplete()
     {
-        isCompleted = true;
-        Debug.Log(gameObject.name + " completed!");
+        GameController.instance.WinPuzzle();
+    }
+    protected virtual void OnFail()
+    {
+        GameController.instance.LosePuzzle();
     }
 }

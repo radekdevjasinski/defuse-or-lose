@@ -76,7 +76,7 @@ public class ButtonPuzzleManager : PuzzleBase
         }
         else
         {
-            Debug.Log("Wrong answer");
+            OnFail();
         }
     }
 }
