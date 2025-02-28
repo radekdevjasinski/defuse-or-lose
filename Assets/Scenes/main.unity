@@ -5195,7 +5195,7 @@ MonoBehaviour:
   - {fileID: 2800000, guid: dafb52f0097d0534bb4af288dd0b00b4, type: 3}
   cursorMode: 0
   hand: {x: 20, y: 0}
-  hold: {x: 0, y: 0}
+  hold: {x: 20, y: 20}
 --- !u!1 &211957963
 GameObject:
   m_ObjectHideFlags: 0
@@ -7896,13 +7896,13 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 788977419}
+  m_TargetGraphic: {fileID: 1948019331}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 885655527}
         m_TargetAssemblyTypeName: ScreenDistributor, Assembly-CSharp
-        m_MethodName: NextPuzzleRight
+        m_MethodName: NextPuzzleLeft
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

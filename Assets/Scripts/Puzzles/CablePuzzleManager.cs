@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class CablePuzzleManager : MonoBehaviour
+public class CablePuzzleManager : PuzzleBase
 {
     public static CablePuzzleManager Instance { get; private set; }
 
@@ -19,8 +19,8 @@ public class CablePuzzleManager : MonoBehaviour
     {
         Instance = this;
     }
-
-    void Start()
+    
+    public override void Initialize()
     {
         if (bombController == null)
         {
@@ -28,9 +28,7 @@ public class CablePuzzleManager : MonoBehaviour
             if (bombObj != null)
             {
                 bombController = bombObj.GetComponent<BombController>();
-                if (bombController != null)
-                    Debug.Log("CablePuzzleManager: BombController automatycznie przypisany.");
-                else
+                if (bombController == null)
                     Debug.LogError("CablePuzzleManager: Obiekt z tagiem 'Bomb' nie posiada BombController.");
             }
             else
@@ -42,10 +40,12 @@ public class CablePuzzleManager : MonoBehaviour
 
         batteryLevel = bombController.batteryBars;
         serialCode = bombController.serialCode;
-        Debug.Log("CablePuzzleManager: Battery Level: " + batteryLevel + ", Serial Code: " + serialCode);
-
         CalculateExpectedConnections();
         PrintExpectedConnections();
+    }
+    void Start()
+    {
+        Initialize();
     }
 
     public bool IsLeftSlotLocked(int leftIndex)
@@ -224,34 +224,37 @@ void CalculateExpectedConnections()
         }
         if (correct)
         {
-            Debug.Log("Cable puzzle solved correctly!");
+            OnComplete();
         }
         else
         {
-            Debug.LogError("Incorrect cable connections! Resetting puzzle...");
-            ResetPuzzle();
+            OnFail();
         }
     }
 
-void ResetPuzzle()
-{
-    Cable[] cables = FindObjectsByType<Cable>(FindObjectsSortMode.None);
-    foreach (Cable cable in cables)
+    void ResetPuzzle()
     {
-        Destroy(cable.gameObject);
+        OnFail();
+        /*
+        Cable[] cables = FindObjectsByType<Cable>(FindObjectsSortMode.None);
+        foreach (Cable cable in cables)
+        {
+            Destroy(cable.gameObject);
+        }
+
+        actualConnections.Clear();
+        expectedConnections.Clear();
+
+        RightCableSlot[] rightSlots = FindObjectsByType<RightCableSlot>(FindObjectsSortMode.None);
+        foreach (RightCableSlot slot in rightSlots)
+        {
+            slot.isUsed = false;
+        }
+
+        Debug.Log("Puzzle reset. Wszystkie sloty zostały wyczyszczone.");
+        CalculateExpectedConnections();
+        PrintExpectedConnections();
+        */
     }
 
-    actualConnections.Clear();
-    expectedConnections.Clear();
-
-    RightCableSlot[] rightSlots = FindObjectsByType<RightCableSlot>(FindObjectsSortMode.None);
-    foreach (RightCableSlot slot in rightSlots)
-    {
-        slot.isUsed = false;
-    }
-
-    Debug.Log("Puzzle reset. Wszystkie sloty zostały wyczyszczone.");
-    CalculateExpectedConnections();
-    PrintExpectedConnections();
-}
 }
