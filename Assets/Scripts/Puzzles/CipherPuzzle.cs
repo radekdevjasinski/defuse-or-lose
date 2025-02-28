@@ -41,9 +41,11 @@ public override void Initialize()
         }
 
         availableLetters = availableLetters.OrderBy(x => random.Next()).ToList();
-         letterFields[i].Initialize(correctWord[i], availableLetters);
+        
+        letterFields[i].Initialize(correctWord[i], availableLetters);
 
     }
+}
 
     private void CheckSolution()
     {
