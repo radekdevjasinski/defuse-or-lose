@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.UI;
 
 public class EnvironmentFallout : EnvironmentBase
 {
@@ -14,6 +15,7 @@ public class EnvironmentFallout : EnvironmentBase
     [Header("Refs")]
     [SerializeField] private CanvasGroup tabletUI;
     [SerializeField] private GameObject puzzleHolder;
+    [SerializeField] private GameObject falloutSound;
 
 
     protected override void Start()
@@ -25,20 +27,23 @@ public class EnvironmentFallout : EnvironmentBase
     private void Corrupt(bool state)
     {
         tabletUI.interactable = !state;
+        tabletUI.gameObject.GetComponent<GraphicRaycaster>().enabled = !state;
         CanvasGroup puzzleUI = puzzleHolder.GetComponentInChildren<CanvasGroup>();
         if(puzzleUI != null)
         {
             puzzleUI.interactable = !state;
+            puzzleUI.gameObject.GetComponent<GraphicRaycaster>().enabled = !state;
         }
     }
     private IEnumerator CorruptionRoutine()
     {
         while (true)
         {
-            yield return new WaitForSeconds(corruptionFrequency + Random.Range(-3f, 3f));
+            yield return new WaitForSeconds(corruptionFrequency + Random.Range(-5f, 5f));
 
             Corrupt(true);
             CursorController.instance.SetCursorDisabled();
+            AudioManager.Instance.PlaySound(falloutSound);
             yield return StartCoroutine(CorruptDisplay());
 
             yield return new WaitForSeconds(corruptionDuration);

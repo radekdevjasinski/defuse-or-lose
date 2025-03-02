@@ -4,11 +4,11 @@ using UnityEngine.Rendering.Universal;
 
 public class EnvironmentBase : MonoBehaviour
 {
-    protected Camera camera;
+    protected Camera cameraRef;
     public Light2D globalLight;
     protected virtual void Start()
     {
-        camera = Camera.main;
+        cameraRef = Camera.main;
     }
 }
 
@@ -29,7 +29,7 @@ public class EnvironmentTrain : EnvironmentBase
     {
         base.Start();
         StartCoroutine(TunnelEffectRoutine());
-        cameraTransform = camera.transform;
+        cameraTransform = cameraRef.transform;
         initialCameraPosition = cameraTransform.localPosition;
         StartCoroutine(CameraShakeRoutine());
 

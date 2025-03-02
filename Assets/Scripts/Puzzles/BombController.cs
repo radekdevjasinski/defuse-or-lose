@@ -24,7 +24,7 @@ public class BombController : MonoBehaviour
     public string serialCode;
 
     [Header("Battery")]
-    [SerializeField] private Image batteryImage;
+    public Image batteryImage;
     public int batteryBars;
     public List<Sprite> batterySprites;
 
@@ -32,6 +32,7 @@ public class BombController : MonoBehaviour
     public TMP_Text timerText; 
     public float timeRemaining;
     public bool timerRunning = true;
+    public bool timerVisible = true;
     private float blinkTime = 0f;  
     private bool isColonVisible = true; 
 
@@ -74,7 +75,10 @@ public class BombController : MonoBehaviour
             }
 
             string colon = isColonVisible ? ":" : " "; 
-            timerText.text = string.Format("{0:00}{1}{2:00}", minutes, colon, seconds);
+            if (timerVisible)
+            {
+                timerText.text = string.Format("{0:00}{1}{2:00}", minutes, colon, seconds);
+            }
         }
     }
     string GenerateSerialKey()
@@ -95,7 +99,7 @@ public class BombController : MonoBehaviour
         strikes++;
         WriteStrikes();
     }
-    void WriteStrikes()
+    public void WriteStrikes()
     {
         foreach (Transform child in strikeParent)
         {
