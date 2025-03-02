@@ -24,6 +24,10 @@ public class PuzzleMorse : PuzzleBase
         {
             OnComplete();
         }
+        else
+        {
+            OnFail();
+        }
     }
     void OnDestroy()
     {

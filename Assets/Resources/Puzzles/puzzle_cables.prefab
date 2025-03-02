@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1512063963518021747}
   - component: {fileID: 5148996870160294798}
   - component: {fileID: 8848784453954821907}
+  - component: {fileID: 5194302384912093853}
   m_Layer: 5
   m_Name: Cable5
   m_TagString: Untagged
@@ -90,6 +91,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isUsed: 0
   rightSlotIndex: 4
+--- !u!114 &5194302384912093853
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 139983862879344016}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1318245be37644548a73c9ad9932c77a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &448988303969723042
 GameObject:
   m_ObjectHideFlags: 0
@@ -102,6 +115,7 @@ GameObject:
   - component: {fileID: 6572770728408185681}
   - component: {fileID: 5965812059881370894}
   - component: {fileID: 428051497559198648}
+  - component: {fileID: 1467204511205058937}
   m_Layer: 5
   m_Name: Cable1
   m_TagString: Untagged
@@ -180,6 +194,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cablePrefab: {fileID: 8618869003447316204, guid: 4276a0f30ea4f964abd871855a73733b, type: 3}
   leftSlotIndex: 0
+--- !u!114 &1467204511205058937
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 448988303969723042}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1318245be37644548a73c9ad9932c77a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1075303242191437175
 GameObject:
   m_ObjectHideFlags: 0
@@ -296,6 +322,7 @@ GameObject:
   - component: {fileID: 1356178682902241037}
   - component: {fileID: 5754798429826711355}
   - component: {fileID: 2586208763610187043}
+  - component: {fileID: 4129372703003809510}
   m_Layer: 5
   m_Name: Cable4
   m_TagString: Untagged
@@ -374,6 +401,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isUsed: 0
   rightSlotIndex: 3
+--- !u!114 &4129372703003809510
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1104230652112912106}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1318245be37644548a73c9ad9932c77a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1140189207169794735
 GameObject:
   m_ObjectHideFlags: 0
@@ -386,6 +425,7 @@ GameObject:
   - component: {fileID: 8650111257423067535}
   - component: {fileID: 6518918828340050681}
   - component: {fileID: 912408931373970352}
+  - component: {fileID: 5936361605560957177}
   m_Layer: 5
   m_Name: Cable5
   m_TagString: Untagged
@@ -464,6 +504,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cablePrefab: {fileID: 8618869003447316204, guid: 4276a0f30ea4f964abd871855a73733b, type: 3}
   leftSlotIndex: 4
+--- !u!114 &5936361605560957177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1140189207169794735}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1318245be37644548a73c9ad9932c77a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2245998445512991018
 GameObject:
   m_ObjectHideFlags: 0
@@ -499,8 +551,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -5.5897007, y: 0}
-  m_SizeDelta: {x: -11.5995, y: -3.6}
+  m_AnchoredPosition: {x: -4.25, y: 0}
+  m_SizeDelta: {x: -11.5, y: -3.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6585059218644129487
 CanvasRenderer:
@@ -691,8 +743,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 5.5748, y: 0}
-  m_SizeDelta: {x: -11.577, y: -3.6}
+  m_AnchoredPosition: {x: 4.25, y: 0}
+  m_SizeDelta: {x: -11.5, y: -3.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5042143776280597270
 CanvasRenderer:
@@ -744,6 +796,7 @@ GameObject:
   - component: {fileID: 7510491939236293758}
   - component: {fileID: 413999110494872848}
   - component: {fileID: 5194597684298936195}
+  - component: {fileID: 6941944156456736051}
   m_Layer: 5
   m_Name: Cable2
   m_TagString: Untagged
@@ -822,6 +875,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cablePrefab: {fileID: 8618869003447316204, guid: 4276a0f30ea4f964abd871855a73733b, type: 3}
   leftSlotIndex: 1
+--- !u!114 &6941944156456736051
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3732407678540138585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1318245be37644548a73c9ad9932c77a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4482693022825258829
 GameObject:
   m_ObjectHideFlags: 0
@@ -834,6 +899,7 @@ GameObject:
   - component: {fileID: 863161612178658220}
   - component: {fileID: 5593536936883022629}
   - component: {fileID: 3261278416438221100}
+  - component: {fileID: 7572533566471127412}
   m_Layer: 5
   m_Name: Cable4
   m_TagString: Untagged
@@ -912,6 +978,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cablePrefab: {fileID: 8618869003447316204, guid: 4276a0f30ea4f964abd871855a73733b, type: 3}
   leftSlotIndex: 3
+--- !u!114 &7572533566471127412
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4482693022825258829}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1318245be37644548a73c9ad9932c77a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4699606729125525313
 GameObject:
   m_ObjectHideFlags: 0
@@ -924,6 +1002,7 @@ GameObject:
   - component: {fileID: 7528831831305101080}
   - component: {fileID: 6403810658333917137}
   - component: {fileID: 7975123974083741724}
+  - component: {fileID: 449970987950490548}
   m_Layer: 5
   m_Name: Cable2
   m_TagString: Untagged
@@ -1002,6 +1081,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isUsed: 0
   rightSlotIndex: 1
+--- !u!114 &449970987950490548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4699606729125525313}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1318245be37644548a73c9ad9932c77a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4987594481337917529
 GameObject:
   m_ObjectHideFlags: 0
@@ -1046,6 +1137,7 @@ GameObject:
   - component: {fileID: 9143191284191144109}
   - component: {fileID: 3359839901799924200}
   - component: {fileID: 7855202163057052546}
+  - component: {fileID: 3402047988039934610}
   m_Layer: 5
   m_Name: Cable3
   m_TagString: Untagged
@@ -1124,6 +1216,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isUsed: 0
   rightSlotIndex: 2
+--- !u!114 &3402047988039934610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6688633399773264126}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1318245be37644548a73c9ad9932c77a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7160004171558838034
 GameObject:
   m_ObjectHideFlags: 0
@@ -1136,6 +1240,7 @@ GameObject:
   - component: {fileID: 1034457353602270061}
   - component: {fileID: 7883653807793642809}
   - component: {fileID: 6570846770060020807}
+  - component: {fileID: 6407117939148811284}
   m_Layer: 5
   m_Name: Cable3
   m_TagString: Untagged
@@ -1214,6 +1319,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cablePrefab: {fileID: 8618869003447316204, guid: 4276a0f30ea4f964abd871855a73733b, type: 3}
   leftSlotIndex: 2
+--- !u!114 &6407117939148811284
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7160004171558838034}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1318245be37644548a73c9ad9932c77a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7339054523425677050
 GameObject:
   m_ObjectHideFlags: 0
@@ -1293,6 +1410,7 @@ GameObject:
   - component: {fileID: 3078702562686557030}
   - component: {fileID: 1176969914047261924}
   - component: {fileID: 761004690958310079}
+  - component: {fileID: 4946482005959517868}
   m_Layer: 5
   m_Name: Cable1
   m_TagString: Untagged
@@ -1371,3 +1489,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isUsed: 0
   rightSlotIndex: 0
+--- !u!114 &4946482005959517868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9186097244065766454}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1318245be37644548a73c9ad9932c77a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -9,7 +9,6 @@ public class ButtonSequencePuzzle : PuzzleBase
     public Button[] buttons;
     public Sprite[] letterSprites;
     public Sprite[] symbolSprites;
-    public Image statusLight;
 
     private Dictionary<string, Sprite> letterDictionary;
     private Dictionary<string, Sprite> symbolDictionary;
@@ -27,7 +26,6 @@ public class ButtonSequencePuzzle : PuzzleBase
 
     public override void Initialize()
     {
-        statusLight.color = Color.white;
         SetupDictionaries();
         AssignSymbolsToButtons();
         GenerateNewPuzzle();
@@ -174,21 +172,7 @@ public class ButtonSequencePuzzle : PuzzleBase
         }
         else
         {
-            PuzzleFailed();
+            OnFail();
         }
-    }
-
-    protected override void OnComplete()
-    {
-        base.OnComplete();
-        statusLight.color = Color.green;
-        Debug.Log("Solved!");
-    }
-
-    private void PuzzleFailed()
-    {
-        statusLight.color = Color.red;
-        Debug.Log("Failed");
-        Invoke("Initialize", 1.5f);
     }
 }

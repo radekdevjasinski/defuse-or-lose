@@ -2,51 +2,39 @@
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 
-public class CableDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class CableDrag : PuzzleBase, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     public GameObject cablePrefab;
     private Cable currentCable;
     private Canvas canvas;
     public int leftSlotIndex;
 
-    void Start()
+    public override void Initialize()
     {
         canvas = GetComponentInParent<Canvas>();
-        if (canvas == null)
-        {
-            //Debug.LogError("[CableDrag] Start: Canvas not found!");
-        }
-        else
-        {
-            //Debug.Log("[CableDrag] Start: Canvas found - " + canvas.name);
-        }
+    }
+    void Start()
+    {
+        Initialize();
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
         if (CablePuzzleManager.Instance != null && CablePuzzleManager.Instance.IsLeftSlotLocked(leftSlotIndex))
-        {
-            //Debug.LogWarning($"[CableDrag] OnBeginDrag: Left slot {leftSlotIndex + 1} is already locked. Drag aborted.");
             return;
-        }
 
-        //Debug.Log("[CableDrag] OnBeginDrag: Started dragging " + gameObject.name);
         if (canvas == null)
-        {
-            //Debug.LogError("[CableDrag] OnBeginDrag: Canvas is null!");
             return;
-        }
+
         GameObject cableObj = Instantiate(cablePrefab, canvas.transform);
         currentCable = cableObj.GetComponent<Cable>();
         if (currentCable == null)
-        {
-            //Debug.LogError("[CableDrag] OnBeginDrag: Cable prefab not found!");
             return;
-        }
+
         RectTransform rt = GetComponent<RectTransform>();
         currentCable.startPos = rt.position;
         currentCable.endPos = rt.position;
-        //Debug.Log("[CableDrag] OnBeginDrag: Cable created, startPos = " + currentCable.startPos);
+        CursorController.instance.SetCursorHold();
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -62,49 +50,48 @@ public class CableDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
                 localPoint.y = Mathf.Clamp(localPoint.y, rect.yMin, rect.yMax);
                 Vector3 clampedWorldPos = canvasRect.TransformPoint(localPoint);
                 currentCable.endPos = clampedWorldPos;
-                //Debug.Log("[CableDrag] OnDrag: endPos (clamped) " + clampedWorldPos);
-            }
-            else
-            {
-                //Debug.LogWarning("[CableDrag] OnDrag: Error converting mouse position!");
+                CursorController.instance.SetCursorHold();
             }
         }
     }
 
-public void OnEndDrag(PointerEventData eventData)
-{
-    if (currentCable == null)
-        return;
-
-    List<RaycastResult> results = new List<RaycastResult>();
-    EventSystem.current.RaycastAll(eventData, results);
-    bool foundSlot = false;
-    foreach (RaycastResult result in results)
+    public void OnEndDrag(PointerEventData eventData)
     {
-        RightCableSlot slot = result.gameObject.GetComponent<RightCableSlot>();
-        if (slot != null && !slot.isUsed)
+        if (currentCable == null)
+            return;
+
+        List<RaycastResult> results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(eventData, results);
+        bool foundSlot = false;
+
+        foreach (RaycastResult result in results)
         {
-            RectTransform slotRT = result.gameObject.GetComponent<RectTransform>();
-            if (slotRT != null)
+            RightCableSlot slot = result.gameObject.GetComponent<RightCableSlot>();
+            if (slot != null && !slot.isUsed)
             {
-                currentCable.endPos = slotRT.position;
-                slot.isUsed = true;
-                foundSlot = true;
-                if (CablePuzzleManager.Instance != null)
+                RectTransform slotRT = result.gameObject.GetComponent<RectTransform>();
+                if (slotRT != null)
                 {
-                    CablePuzzleManager.Instance.RegisterConnection(this.leftSlotIndex, slot.rightSlotIndex);
+                    currentCable.endPos = slotRT.position;
+                    slot.isUsed = true;
+                    foundSlot = true;
+                    if (CablePuzzleManager.Instance != null)
+                    {
+                        CablePuzzleManager.Instance.RegisterConnection(this.leftSlotIndex, slot.rightSlotIndex);
+                    }
+                    break;
                 }
-                break;
             }
         }
-    }
-    if (!foundSlot)
-    {
-        if (currentCable.gameObject != null)
+
+        if (!foundSlot)
         {
             Destroy(currentCable.gameObject);
         }
+
+        currentCable = null;
+        CursorController.instance.SetCursorDefault();
     }
-    currentCable = null;
-}
+
+
 }

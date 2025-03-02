@@ -45,8 +45,12 @@ public class MorseGenerator : MonoBehaviour
 
     void TurnLight(bool on)
     {
-        light_on.SetActive(on);
-        light_off.SetActive(!on);
+        try
+        {
+            light_on.SetActive(on);
+            light_off.SetActive(!on);
+        }
+        catch (Exception){}
     }
 
     public void StopMorseLoop()
