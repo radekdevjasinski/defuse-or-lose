@@ -5196,12 +5196,8 @@ MonoBehaviour:
   - {fileID: 2800000, guid: d747e87bda535b949b44a82c0b5e1391, type: 3}
   cursorMode: 0
   hand: {x: 20, y: 0}
-<<<<<<< Updated upstream
-  hold: {x: 0, y: 0}
-=======
   hold: {x: 20, y: 20}
   disabled: {x: 25, y: 25}
->>>>>>> Stashed changes
 --- !u!1 &211957963
 GameObject:
   m_ObjectHideFlags: 0
@@ -6599,10 +6595,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a034daca906b29468b6d0b7146e44ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-<<<<<<< Updated upstream
-  folderPath: Puzzles
-  numberOfPuzzles: 6
-=======
   puzzlePrefabs:
   - {fileID: 4987594481337917529, guid: c88cc6ad30a4a474585e004a36398346, type: 3}
   - {fileID: 4987594481337917529, guid: 21589bf58409b7644a6f9f5ab27d3eed, type: 3}
@@ -6610,7 +6602,6 @@ MonoBehaviour:
   - {fileID: 4987594481337917529, guid: e6bfef053839a1944abf974ccb0be0fa, type: 3}
   - {fileID: 4987594481337917529, guid: fc5f09e6e1e365b4caaf0ba58e0c2c3c, type: 3}
   - {fileID: 4987594481337917529, guid: 583910275e625ad4d94e76fbdd711b47, type: 3}
->>>>>>> Stashed changes
 --- !u!1 &1047964401
 GameObject:
   m_ObjectHideFlags: 0
