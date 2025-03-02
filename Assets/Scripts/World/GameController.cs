@@ -8,6 +8,7 @@ public class GameController : MonoBehaviour
     public PuzzleController puzzleController;
     public BombController bombController;
     public ScreenDistributor screenDistributor;
+    public int maxStrikes = 3;
     void Awake()
     {
         if (instance == null)
@@ -22,7 +23,7 @@ public class GameController : MonoBehaviour
     public void LosePuzzle()
     {
         bombController.AddStrike();
-        if (bombController.strikes >= 3)
+        if (bombController.strikes >= maxStrikes)
         {
             LoseGame();
         }
