@@ -20,32 +20,32 @@ public class CipherPuzzle : PuzzleBase
         checkButton.onClick.AddListener(CheckSolution);
     }
 
-public override void Initialize()
-{
-    encryptedText.text = cipherGenerator.GenerateCipher(out correctWord);
-
-    System.Random random = new System.Random();
-
-    for (int i = 0; i < letterFields.Length; i++)
+    public override void Initialize()
     {
-        List<char> availableLetters = new List<char> { correctWord[i] };
+        encryptedText.text = cipherGenerator.GenerateCipher(out correctWord);
+        System.Random random = new System.Random();
 
-        List<char> allLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToList();
-        allLetters.Remove(correctWord[i]);
-
-        while (availableLetters.Count < 9)
+        for (int i = 0; i < letterFields.Length; i++)
         {
-            char extra = allLetters[random.Next(allLetters.Count)];
-            availableLetters.Add(extra);
-            allLetters.Remove(extra);
+            List<char> availableLetters = new List<char> { correctWord[i] };
+
+            List<char> pool = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToList();
+            pool.Remove(correctWord[i]);
+
+            while (availableLetters.Count < 9)
+            {
+                char extra = pool[random.Next(pool.Count)];
+                availableLetters.Add(extra);
+                pool.Remove(extra);
+            }
+
+            availableLetters = availableLetters.OrderBy(x => random.Next()).ToList();
+            
+            Debug.Log($"Pole {i + 1}: Poprawna litera: {correctWord[i]} | Pula liter: {string.Join(", ", availableLetters)}");
+            
+            letterFields[i].Initialize(correctWord[i], availableLetters);
         }
-
-        availableLetters = availableLetters.OrderBy(x => random.Next()).ToList();
-        
-        letterFields[i].Initialize(correctWord[i], availableLetters);
-
     }
-}
 
     private void CheckSolution()
     {
