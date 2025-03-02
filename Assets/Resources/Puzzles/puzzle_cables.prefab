@@ -192,6 +192,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e5a1c8731d4c5a4fbf084b128c955c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  puzzleController: {fileID: 0}
   cablePrefab: {fileID: 8618869003447316204, guid: 4276a0f30ea4f964abd871855a73733b, type: 3}
   leftSlotIndex: 0
 --- !u!114 &1467204511205058937
@@ -218,6 +219,7 @@ GameObject:
   - component: {fileID: 898100404101004211}
   - component: {fileID: 4141886416589071975}
   - component: {fileID: 7605910410041880345}
+  - component: {fileID: 798871459338614538}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -310,6 +312,18 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!225 &798871459338614538
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1075303242191437175}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1104230652112912106
 GameObject:
   m_ObjectHideFlags: 0
@@ -502,6 +516,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e5a1c8731d4c5a4fbf084b128c955c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  puzzleController: {fileID: 0}
   cablePrefab: {fileID: 8618869003447316204, guid: 4276a0f30ea4f964abd871855a73733b, type: 3}
   leftSlotIndex: 4
 --- !u!114 &5936361605560957177
@@ -640,6 +655,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3a6ec77d8fb0d64b806a510a214389e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  puzzleController: {fileID: 0}
   bombController: {fileID: 0}
 --- !u!1 &3537538042447192920
 GameObject:
@@ -873,6 +889,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e5a1c8731d4c5a4fbf084b128c955c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  puzzleController: {fileID: 0}
   cablePrefab: {fileID: 8618869003447316204, guid: 4276a0f30ea4f964abd871855a73733b, type: 3}
   leftSlotIndex: 1
 --- !u!114 &6941944156456736051
@@ -976,6 +993,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e5a1c8731d4c5a4fbf084b128c955c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  puzzleController: {fileID: 0}
   cablePrefab: {fileID: 8618869003447316204, guid: 4276a0f30ea4f964abd871855a73733b, type: 3}
   leftSlotIndex: 3
 --- !u!114 &7572533566471127412
@@ -1317,6 +1335,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e5a1c8731d4c5a4fbf084b128c955c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  puzzleController: {fileID: 0}
   cablePrefab: {fileID: 8618869003447316204, guid: 4276a0f30ea4f964abd871855a73733b, type: 3}
   leftSlotIndex: 2
 --- !u!114 &6407117939148811284
