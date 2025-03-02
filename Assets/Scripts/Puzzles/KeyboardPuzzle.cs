@@ -116,7 +116,7 @@ public class KeyboardPuzzle : PuzzleBase
                 puzzleAnswer = answer3 + answer2 + answer1; 
                 break;
             case 2:
-                puzzleAnswer = answer3 + answer2 + answer1;
+                puzzleAnswer = answer1.ToString() + answer1.ToString() + answer1.ToString();
                 break;
             default:
                 break;

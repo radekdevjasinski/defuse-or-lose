@@ -6591,8 +6591,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a034daca906b29468b6d0b7146e44ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  folderPath: Puzzles
-  numberOfPuzzles: 6
+  puzzlePrefabs:
+  - {fileID: 4987594481337917529, guid: c88cc6ad30a4a474585e004a36398346, type: 3}
+  - {fileID: 4987594481337917529, guid: 21589bf58409b7644a6f9f5ab27d3eed, type: 3}
+  - {fileID: 4987594481337917529, guid: f0c551c4115ff954f8e38b8ae4e7e826, type: 3}
+  - {fileID: 4987594481337917529, guid: e6bfef053839a1944abf974ccb0be0fa, type: 3}
+  - {fileID: 4987594481337917529, guid: fc5f09e6e1e365b4caaf0ba58e0c2c3c, type: 3}
+  - {fileID: 4987594481337917529, guid: 583910275e625ad4d94e76fbdd711b47, type: 3}
+  - {fileID: 4987594481337917529, guid: c88cc6ad30a4a474585e004a36398346, type: 3}
+  - {fileID: 4987594481337917529, guid: c88cc6ad30a4a474585e004a36398346, type: 3}
+  - {fileID: 4987594481337917529, guid: c88cc6ad30a4a474585e004a36398346, type: 3}
+  - {fileID: 4987594481337917529, guid: c88cc6ad30a4a474585e004a36398346, type: 3}
 --- !u!1 &1047964401
 GameObject:
   m_ObjectHideFlags: 0
