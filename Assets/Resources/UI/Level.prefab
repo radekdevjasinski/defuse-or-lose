@@ -557,6 +557,7 @@ GameObject:
   - component: {fileID: 6871318065450176775}
   - component: {fileID: 3098530630471697828}
   - component: {fileID: 4066885017621198222}
+  - component: {fileID: 7908862265262490567}
   m_Layer: 5
   m_Name: Level
   m_TagString: Untagged
@@ -684,6 +685,18 @@ MonoBehaviour:
   strikesText: {fileID: 5657418017019911046}
   puzzlesText: {fileID: 1701538401072415119}
   button: {fileID: 3098530630471697828}
+--- !u!114 &7908862265262490567
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6012510322570012152}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1318245be37644548a73c9ad9932c77a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8922000683713936923
 GameObject:
   m_ObjectHideFlags: 0
