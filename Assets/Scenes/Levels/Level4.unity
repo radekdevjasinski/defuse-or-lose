@@ -6814,7 +6814,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   puzzlePrefabs:
   - {fileID: 4987594481337917529, guid: 21589bf58409b7644a6f9f5ab27d3eed, type: 3}
-  - {fileID: 4987594481337917529, guid: c88cc6ad30a4a474585e004a36398346, type: 3}
+  - {fileID: 4987594481337917529, guid: 3d9842d0b7376d644a6a6d71f009a85a, type: 3}
   - {fileID: 4987594481337917529, guid: fc5f09e6e1e365b4caaf0ba58e0c2c3c, type: 3}
   - {fileID: 4987594481337917529, guid: f0c551c4115ff954f8e38b8ae4e7e826, type: 3}
 --- !u!1 &931055488

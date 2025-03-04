@@ -16,4 +16,4 @@ MonoBehaviour:
   levelName: 2
   timeRemaining: 10
   maxStrikes: 3
-  puzzlesCount: 2
+  puzzlesCount: 3
