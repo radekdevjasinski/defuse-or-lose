@@ -33,8 +33,9 @@ public class BombController : MonoBehaviour
     public float timeRemaining;
     public bool timerRunning = true;
     public bool timerVisible = true;
-    private float blinkTime = 0f;  
-    private bool isColonVisible = true; 
+    public GameObject timerSound;
+    private float lastUpdateTime = 0f;
+
 
     [Header("Strikes")]
     public GameObject strikeUI;
@@ -51,36 +52,40 @@ public class BombController : MonoBehaviour
 
         strikes = 0;
         WriteStrikes();
-    }
-    void Update()
-    {
-        if (timerRunning)
-        {
-            timeRemaining -= Time.deltaTime;
 
-            if (timeRemaining <= 0f)
-            {
-                timeRemaining = 0f;
-                timerRunning = false;
-            }
+        int minutes = Mathf.FloorToInt(timeRemaining / 60f);
+        int seconds = Mathf.FloorToInt(timeRemaining % 60f);
+
+        timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+    }
+
+void Update()
+{
+    if (timerRunning)
+    {
+        timeRemaining -= Time.deltaTime;
+        if (timeRemaining <= 0f)
+        {
+            timeRemaining = 0f;
+            timerRunning = false;
+        }
+
+        if (Time.time - lastUpdateTime >= 1f) 
+        {
+            lastUpdateTime = Time.time;
 
             int minutes = Mathf.FloorToInt(timeRemaining / 60f);
             int seconds = Mathf.FloorToInt(timeRemaining % 60f);
 
-            blinkTime -= Time.deltaTime;
-            if (blinkTime <= 0f)
-            {
-                isColonVisible = !isColonVisible; 
-                blinkTime = 0.5f; 
-            }
-
-            string colon = isColonVisible ? ":" : " "; 
             if (timerVisible)
             {
-                timerText.text = string.Format("{0:00}{1}{2:00}", minutes, colon, seconds);
+                timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
             }
+            AudioManager.Instance.PlaySound(timerSound);
         }
     }
+}
+
     string GenerateSerialKey()
     {
         const string characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
