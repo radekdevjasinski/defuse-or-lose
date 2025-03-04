@@ -5885,7 +5885,9 @@ MonoBehaviour:
   maxStrikes: 3
   winScreen: {fileID: 863306921}
   loseScreen: {fileID: 1736452973}
-  explodeSound: {fileID: 6692647890952308752, guid: 1e6b420051d489847bedf5787530dfeb, type: 3}
+  explodeSound: {fileID: 6692647890952308752, guid: a44adda75992f614cb146f15f62b2323, type: 3}
+  winSound: {fileID: 6692647890952308752, guid: 3638bf7dc7c2f2f41b7fafcaf5d72b02, type: 3}
+  loseSound: {fileID: 6692647890952308752, guid: 1e6b420051d489847bedf5787530dfeb, type: 3}
 --- !u!1 &488646970
 GameObject:
   m_ObjectHideFlags: 0
@@ -6446,8 +6448,10 @@ MonoBehaviour:
   events:
   - {fileID: 6692647890952308752, guid: 2e1b87cefe5ca684bac60458d4f9752b, type: 3}
   - {fileID: 6692647890952308752, guid: 9cefd30c57e401745b3fe2d3d0ed0376, type: 3}
-  - {fileID: 6692647890952308752, guid: 1e6b420051d489847bedf5787530dfeb, type: 3}
   - {fileID: 6692647890952308752, guid: 5208ab15e460584459a2e9af4156ebae, type: 3}
+  - {fileID: 6692647890952308752, guid: 1e6b420051d489847bedf5787530dfeb, type: 3}
+  - {fileID: 6692647890952308752, guid: 3638bf7dc7c2f2f41b7fafcaf5d72b02, type: 3}
+  - {fileID: 6692647890952308752, guid: a44adda75992f614cb146f15f62b2323, type: 3}
   ambients:
   - {fileID: 1503331908197635870, guid: b6779ad7bbf3a714dbaac12d75f10940, type: 3}
   - {fileID: 9216898760353064903, guid: c5fd79e3b803d26438827dd2e785ced7, type: 3}

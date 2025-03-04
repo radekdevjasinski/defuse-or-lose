@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5010110110931680365}
   - component: {fileID: 3703947065588053007}
   m_Layer: 0
-  m_Name: explosion
+  m_Name: win
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -42,10 +42,10 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: f8857876cef9caa428ac9cf8a89b9fbb, type: 3}
-  m_Resource: {fileID: 8300000, guid: f8857876cef9caa428ac9cf8a89b9fbb, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 00e44a2795bde2846a5d86fb018e1a05, type: 3}
+  m_Resource: {fileID: 8300000, guid: 00e44a2795bde2846a5d86fb018e1a05, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.7
+  m_Volume: 0.3
   m_Pitch: 1
   Loop: 0
   Mute: 0
