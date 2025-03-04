@@ -15,7 +15,10 @@ public class GameController : MonoBehaviour
     [Header("Screens")]
     public GameObject winScreen;
     public GameObject loseScreen;
+    [Header("Sounds")]
     public GameObject explodeSound;
+    public GameObject winSound;
+    public GameObject loseSound;
     void Awake()
     {
         if (instance == null)
@@ -29,22 +32,22 @@ public class GameController : MonoBehaviour
     }
     public void LosePuzzle()
     {
+        AudioManager.Instance.PlaySound(loseSound);
         bombController.AddStrike();
         if (bombController.strikes >= maxStrikes)
         {
             LoseGame();
         }
         screenDistributor.ReloadPuzzle();
-        Debug.Log("You lost the puzzle!");
     }
     public void WinPuzzle()
     {
+        AudioManager.Instance.PlaySound(winSound);
         int winIndex = screenDistributor.currentPuzzleIndex;
         screenDistributor.NextPuzzleRight();
         puzzleController.activePuzzles[winIndex].isCompleted = true;
         screenDistributor.SpawnIcons();
         CheckPuzzles();
-        Debug.Log("You won the puzzle!");
     }
     void CheckPuzzles()
     {
@@ -61,6 +64,8 @@ public class GameController : MonoBehaviour
     {
         //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         loseScreen.SetActive(true);
+        bombController.timerRunning = false;
+        AudioManager.Instance.StopAllSounds();
         StartCoroutine(LoseGameCoroutine());
 
     }
@@ -69,10 +74,14 @@ public class GameController : MonoBehaviour
         yield return new WaitForSeconds(1f);
         loseScreen.GetComponent<Animator>().SetTrigger("lose");
         AudioManager.Instance.PlaySound(explodeSound);
+        yield return new WaitForSeconds(1.5f);
+        Time.timeScale = 0f;
+
     }
     public void WinGame()
     {
         winScreen.SetActive(true);
+        bombController.timerRunning = false;
         winScreen.GetComponent<Animator>().SetTrigger("win");
     }
     void Update()

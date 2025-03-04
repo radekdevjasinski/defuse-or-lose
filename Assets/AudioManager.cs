@@ -52,6 +52,19 @@ public class AudioManager : MonoBehaviour
     }
     public void PlaySound(GameObject sound)
     {
-        sounds[sound].Play();
+        if (sounds.ContainsKey(sound))
+            sounds[sound].Play();
     }
+    public void StopAllSounds()
+    {
+        foreach (Transform child in transform)
+        {
+            AudioSource audioSource = child.GetComponent<AudioSource>();
+            if (audioSource != null)
+            {
+                audioSource.Stop();
+            }
+        }
+    }
+
 }

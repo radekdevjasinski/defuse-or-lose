@@ -68,6 +68,7 @@ void Update()
         {
             timeRemaining = 0f;
             timerRunning = false;
+            GameController.instance.LoseGame();
         }
 
         if (Time.time - lastUpdateTime >= 1f) 
