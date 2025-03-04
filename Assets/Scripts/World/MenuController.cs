@@ -45,6 +45,7 @@ public class MainMenuManager : MonoBehaviour
     void OnPlayClicked()
     {
         Debug.Log("Play button clicked. Switching to level selection panel.");
+        Time.timeScale = 1;
         mainPanel.SetActive(false);
         levelSelectPanel.SetActive(true);
     }
