@@ -310,8 +310,8 @@ MonoBehaviour:
   - {fileID: 2139911119864973895}
   - {fileID: 2091734645797974290}
   - {fileID: 2628299279998747144}
-  normalColor: {r: 0, g: 0.91, b: 0, a: 1}
-  blinkColor: {r: 0, g: 0, b: 0, a: 1}
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  blinkColor: {r: 1, g: 0.6933962, b: 0.6933962, a: 1}
   blinkDuration: 0.5
 --- !u!1 &4397391126130980802
 GameObject:

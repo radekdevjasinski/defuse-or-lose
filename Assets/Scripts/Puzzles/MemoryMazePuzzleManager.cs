@@ -62,9 +62,11 @@ IEnumerator BlinkButton(ButtonPosition pos)
         yield break;
     }
     btn.interactable = false;
+    btn.image.color = blinkColor;
     Debug.Log("[MemoryMazePuzzleManager] Miganie (blokada) przycisku " + pos.ToString() + " rozpoczęte.");
     yield return new WaitForSeconds(blinkDuration);
     btn.interactable = true;
+    btn.image.color = normalColor;
     Debug.Log("[MemoryMazePuzzleManager] Miganie zakończone, przycisk " + pos.ToString() + " ponownie interaktywny.");
 }
 
