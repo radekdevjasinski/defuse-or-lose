@@ -14,7 +14,9 @@ public class PuzzleController : MonoBehaviour
 {
     public GameObject[] puzzlePrefabs;
     public List<Puzzle> activePuzzles = new List<Puzzle>();
+    public int puzzles;
     private ScreenDistributor screenDistributor;
+
 
     void Start()
     {
@@ -29,13 +31,16 @@ public class PuzzleController : MonoBehaviour
     {
         if (puzzlePrefabs.Length == 0) return;
         
-        activePuzzles.Clear(); 
+        activePuzzles.Clear();
+        List<GameObject> randomPrefabs = new List<GameObject>(puzzlePrefabs);
 
-        for (int i = 0; i < puzzlePrefabs.Length; i++)
+        for (int i = 0; i < puzzles; i++)
         {
-            GameObject selectedPrefab = puzzlePrefabs[i];
+            int randomIndex = Random.Range(0, randomPrefabs.Count);
+            GameObject selectedPrefab = randomPrefabs[randomIndex];
             Puzzle puzzle = new Puzzle(selectedPrefab);
             activePuzzles.Add(puzzle);        
+            randomPrefabs.RemoveAt(randomIndex);
         }
     }
 }

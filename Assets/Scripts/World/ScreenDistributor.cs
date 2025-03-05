@@ -22,8 +22,17 @@ public class ScreenDistributor : MonoBehaviour
     }
     public void DisplayPuzzle(GameObject puzzlePrefab)
     {
+
         if (activePuzzle != null)
         {
+            if(activePuzzle?.GetComponentInChildren<PuzzleMorse>()!= null)
+            {
+                GameObject.Find("tablet_morse_light").GetComponent<MorseGenerator>().StopMorseLoop();
+            }
+            if(activePuzzle?.GetComponentInChildren<EntryphonePuzzle>() != null)
+            {
+                activePuzzle.GetComponentInChildren<EntryphonePuzzle>().StopAllCoroutines();
+            }
             Destroy(activePuzzle);
         }
         activePuzzle = Instantiate(puzzlePrefab, transform);

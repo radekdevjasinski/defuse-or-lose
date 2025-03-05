@@ -66,5 +66,11 @@ public class AudioManager : MonoBehaviour
             }
         }
     }
+    public void AddSound(GameObject sound)
+    {
+        if (sounds.ContainsKey(sound)) return;
+        GameObject soundSource = Instantiate(sound, transform);
+        sounds.Add(sound, soundSource.GetComponent<AudioSource>());
+    }
 
 }

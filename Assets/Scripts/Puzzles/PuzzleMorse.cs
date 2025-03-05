@@ -29,8 +29,4 @@ public class PuzzleMorse : PuzzleBase
             OnFail();
         }
     }
-    void OnDestroy()
-    {
-        morseGenerator.StopMorseLoop();
-    }
 }
