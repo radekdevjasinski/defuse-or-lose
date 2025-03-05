@@ -5787,7 +5787,7 @@ MonoBehaviour:
   timerSound: {fileID: 6692647890952308752, guid: 5208ab15e460584459a2e9af4156ebae, type: 3}
   strikeUI: {fileID: 1392761749925799699, guid: 11d62f02fa001974aa89d641deba044b, type: 3}
   strikeParent: {fileID: 1931552021}
-  strikes: 0
+  strikes: 1
 --- !u!114 &486459334
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6814,6 +6814,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   puzzlePrefabs:
   - {fileID: 4987594481337917529, guid: c88cc6ad30a4a474585e004a36398346, type: 3}
+  - {fileID: 4987594481337917529, guid: f0c551c4115ff954f8e38b8ae4e7e826, type: 3}
+  - {fileID: 4987594481337917529, guid: 6dbbeca084695d1419ac982699190601, type: 3}
+  - {fileID: 4987594481337917529, guid: 583910275e625ad4d94e76fbdd711b47, type: 3}
+  puzzles: 2
 --- !u!1 &931055488
 GameObject:
   m_ObjectHideFlags: 0

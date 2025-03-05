@@ -84,11 +84,4 @@ public class GameController : MonoBehaviour
         bombController.timerRunning = false;
         winScreen.GetComponent<Animator>().SetTrigger("win");
     }
-    void Update()
-    {
-        if (bombController.timeRemaining <= 0f && !bombController.timerRunning)
-        {
-            LoseGame();
-        }
-    }
 }

@@ -37,20 +37,18 @@ public class MorseGenerator : MonoBehaviour
             Debug.LogError("Liczba musi być w zakresie 1-99!");
             return;
         }
-
-        StopAllCoroutines();
+        StopMorseLoop();
+        TurnLight(false);
         isPlaying = true;
         StartCoroutine(PlayMorseLoop(number));
     }
 
     void TurnLight(bool on)
     {
-        try
-        {
-            light_on.SetActive(on);
-            light_off.SetActive(!on);
-        }
-        catch (Exception){}
+
+        light_on?.SetActive(on);
+        light_off?.SetActive(!on);
+
     }
 
     public void StopMorseLoop()
@@ -71,6 +69,7 @@ public class MorseGenerator : MonoBehaviour
         }
         
         TurnLight(false);
+        yield return new WaitForSeconds(letterPause);
         while (isPlaying)
         {
             foreach (bool signal in morseCode)

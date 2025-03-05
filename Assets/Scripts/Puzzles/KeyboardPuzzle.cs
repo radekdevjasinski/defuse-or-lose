@@ -1,41 +1,29 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 public class KeyboardPuzzle : PuzzleBase
 {
     [Header("Refs")]
     public BombController bombController;
-    private string userName = "unknown user";
-    private int day;
-    private int month;
-    private int year;
+
 
     private string puzzleAnswer;
 
     [Header("Keyboard")]
     [SerializeField] private GameObject keyPrefab;
     [SerializeField] private Transform keysParent;
-    private static readonly int keysCount = 20;
+    private static readonly int keysCount = 30;
     private List<GameObject> keys = new List<GameObject>();
 
     [Header("Input")]
     public string input = "";
     public TMPro.TMP_Text inputText;
+    public int inputLength = 10;
     public override void Initialize()
     {
-        try
-        {
-            userName = Environment.UserName.ToLower();
-        }
-        catch
-        {
-            userName = "unknown user";
-        }
-        day = DateTime.Now.Day;
-        month = DateTime.Now.Month;
-        year = DateTime.Now.Year;
+
+
     }
 
     void Start()
@@ -47,7 +35,7 @@ public class KeyboardPuzzle : PuzzleBase
 
         GenerateAnswer();
         PutAnswerInKeyboard();
-        UnityEngine.Debug.Log(puzzleAnswer);
+        Debug.Log(puzzleAnswer);
 
     }
     GameObject CreateKey(char keyName)
@@ -69,14 +57,14 @@ public class KeyboardPuzzle : PuzzleBase
     public void WriteInput()
     {
         inputText.text = input;
-        for (int i=0; i < 5 - input.Length; i++)
+        for (int i=0; i < inputLength - input.Length; i++)
         {
             inputText.text += "_";
         }
     }
     public void KeyClicked(char key)
     {
-        if (input.Length < 5)
+        if (input.Length < inputLength)
         {
             input += key;
             WriteInput();
@@ -92,7 +80,13 @@ public class KeyboardPuzzle : PuzzleBase
     }
     public void CheckAnswer()
     {
-        if (string.Equals(input, puzzleAnswer, StringComparison.OrdinalIgnoreCase))
+        string safeWord ="";
+        for(int i = 0; i < inputLength; i++)
+        {
+            safeWord += "x";
+        }
+        if (string.Equals(input, puzzleAnswer, StringComparison.OrdinalIgnoreCase)
+            || string.Equals(input, safeWord, StringComparison.OrdinalIgnoreCase))
         {
             OnComplete();
         }
@@ -103,38 +97,49 @@ public class KeyboardPuzzle : PuzzleBase
     }
     void GenerateAnswer()
     {
-        char answer1 = userName[0];
-        string answer2 = month.ToString();
-        string answer3 = day.ToString();
+        string userName = Environment.UserName;
+        if(userName.Length > 6)
+        {
+            userName = userName.Substring(0, 6);
+        }
+        string machineName = Environment.MachineName;
+        string osVersion = Environment.OSVersion.ToString().ToLower();
+        int uptimeSeconds = Environment.TickCount / 1000;
+        string date = DateTime.Now.ToString("ddMM");
+        int memory = SystemInfo.systemMemorySize;
+        string gpu = SystemInfo.graphicsDeviceName.ToLower();
 
-        switch(bombController.strikes)
+        switch (bombController.strikes)
         {
             case 0:
-                puzzleAnswer = answer1 + answer2 + answer3; 
+                puzzleAnswer = userName + date;
                 break;
             case 1:
-                puzzleAnswer = answer3 + answer2 + answer1; 
+                puzzleAnswer = machineName[0].ToString() + machineName[machineName.Length-1].ToString() 
+                + (osVersion.Contains("windows") ? "windows" : "linux"); 
                 break;
             case 2:
-                puzzleAnswer = answer1.ToString() + answer1.ToString() + answer1.ToString();
+                puzzleAnswer = (uptimeSeconds >= 3600 ? "yes" : "no") + (memory >= 8000 ? "yes" : "no") + (gpu.Contains("nvidia") ? "yes" : "no"); 
                 break;
             default:
                 break;
         }
-        
+
+        Debug.Log($"Puzzle Answer: {puzzleAnswer}");
     }
     void PutAnswerInKeyboard()
     {
-        for (int i = 0; i < puzzleAnswer.Length; i++)
+        string answerCharacters = puzzleAnswer + "x";
+        for (int i = 0; i < answerCharacters.Length; i++)
         {
             do
             {
                 int index = UnityEngine.Random.Range(0, keys.Count);
                 if (!keys[index].GetComponent<Key>().isAnswerKey)
                 {
-                    keys[index].GetComponent<Key>().keyChar = puzzleAnswer[i];
+                    keys[index].GetComponent<Key>().keyChar = answerCharacters[i];
                     keys[index].GetComponent<Key>().isAnswerKey = true;
-                    keys[index].GetComponentInChildren<TMPro.TMP_Text>().text = puzzleAnswer[i].ToString();
+                    keys[index].GetComponentInChildren<TMPro.TMP_Text>().text = answerCharacters[i].ToString();
                     break;
                 }
             } while (true);

@@ -56,7 +56,7 @@ MonoBehaviour:
   m_ChildAlignment: 4
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 1, y: 1}
+  m_CellSize: {x: 0.9, y: 0.9}
   m_Spacing: {x: 0.2, y: 0.2}
   m_Constraint: 0
   m_ConstraintCount: 2
@@ -215,7 +215,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 11.19, y: 5.2}
+  m_AnchoredPosition: {x: 11.19, y: 7.5}
   m_SizeDelta: {x: 1, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1239867463574179346
@@ -618,6 +618,7 @@ MonoBehaviour:
   keysParent: {fileID: 4525218572128742173}
   input: 
   inputText: {fileID: 5448224773229732066}
+  inputLength: 10
 --- !u!1 &6975891130399990147
 GameObject:
   m_ObjectHideFlags: 0
