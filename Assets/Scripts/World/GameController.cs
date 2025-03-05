@@ -84,4 +84,11 @@ public class GameController : MonoBehaviour
         bombController.timerRunning = false;
         winScreen.GetComponent<Animator>().SetTrigger("win");
     }
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Menu");
+        }
+    }
 }
