@@ -17,7 +17,7 @@ Sama gra zmienia się dynamicznie dzięki wpływowi trzech różnych środowisk,
 Gra osadzona jest w kryzysowej sytuacji, jeden z graczy, który wracał z ciężkiej podróży, znalazł się w pułapce, z której jedynym wyjściem jest szybkie i precyzyjne działanie jakim jest rozbrojenie bomby podłożonej w pociągu. Na szczęście nie pozostał w tym sam, jego przyjaciel, który znajdował się w centrali, po usłyszeniu o sytuacji, postanowił jak najprędzej ruszyć po manual "How not to explode (maybe)" i poprowadzić kompana podpowiedziami oraz konkretnymi instrukcjami jak krok po kroku uporać się z zagrożeniem.
 
 2. Sterowanie.
-Całość gry gracz operuje tylko i wyłącznie myszką.
+Przez całą grę gracz korzysta tylko z myszki. W trakcie rozjbrajania za pomocą spacji można przybliżyć ekran.
 
 3. W jaki sposób gra nawiązuje do tematu.
 4. Proces twórczy (jak powstawały elementy gry (grafiki, audio itp.)).
