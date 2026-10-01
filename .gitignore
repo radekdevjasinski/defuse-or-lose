@@ -74,3 +74,6 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
 .vsconfig
+
+# Built player, distributed through GitHub Releases
+/Game/
