@@ -77,3 +77,4 @@ crashlytics-build.properties
 
 # Built player, distributed through GitHub Releases
 /Game/
+*.slnx
