@@ -1,167 +1,131 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Linq;
 
-public class ButtonSequencePuzzle : PuzzleBase
+namespace DefuseOrLose
 {
-    public Image[] instructionImages;
-    public Button[] buttons;
-    public Sprite[] letterSprites;
-    public Sprite[] symbolSprites;
-
-    private Dictionary<string, Sprite> letterDictionary;
-    private Dictionary<string, Sprite> symbolDictionary;
-    private Dictionary<Button, (string position, string symbol)> buttonData;
-
-    private List<Button> correctOrder;
-    private List<string> correctHints;
-    private List<bool> isHintPosition;
-    private int currentStep;
-
-    public void Start()
+    public class ButtonSequencePuzzle : PuzzleBase
     {
-        Initialize();
-    }
+        private const float PositionHintChance = 0.5f;
 
-    public override void Initialize()
-    {
-        SetupDictionaries();
-        AssignSymbolsToButtons();
-        GenerateNewPuzzle();
-    }
+        [SerializeField] private Image[] instructionImages;
+        [SerializeField] private Button[] buttons;
+        [SerializeField] private Sprite[] letterSprites;
+        [SerializeField] private Sprite[] symbolSprites;
 
-    private void SetupDictionaries()
-    {
-        letterDictionary = letterSprites.ToDictionary(sprite => sprite.name.ToLower(), sprite => sprite);
-        symbolDictionary = symbolSprites.ToDictionary(sprite => sprite.name.ToLower(), sprite => sprite);
-    }
+        private Dictionary<string, Sprite> letterDictionary;
+        private Dictionary<Button, (string position, string symbol)> buttonData;
 
-    private void AssignSymbolsToButtons()
-    {
-        buttonData = new Dictionary<Button, (string position, string symbol)>();
+        private List<Button> correctOrder;
+        private List<string> correctHints;
+        private List<bool> isHintPosition;
+        private int currentStep;
 
-        List<string> symbolKeys = symbolDictionary.Keys.ToList();
-        symbolKeys = symbolKeys.OrderBy(x => Random.value).ToList();
-
-        for (int i = 0; i < buttons.Length; i++)
+        public void Start()
         {
-            buttons[i].image.sprite = symbolDictionary[symbolKeys[i]];
+            Initialize();
         }
 
-        Button leftButton = null, rightButton = null, topButton = null, downButton = null;
-        float minX = float.MaxValue, maxX = float.MinValue, minY = float.MaxValue, maxY = float.MinValue;
-
-        foreach (Button b in buttons)
+        public override void Initialize()
         {
-            RectTransform rt = b.GetComponent<RectTransform>();
-            Vector2 pos = rt.anchoredPosition;
-            if (pos.x < minX) { minX = pos.x; leftButton = b; }
-            if (pos.x > maxX) { maxX = pos.x; rightButton = b; }
-            if (pos.y < minY) { minY = pos.y; downButton = b; }
-            if (pos.y > maxY) { maxY = pos.y; topButton = b; }
+            letterDictionary = letterSprites.ToDictionary(sprite => sprite.name.ToLowerInvariant(), sprite => sprite);
+            AssignSymbolsToButtons();
+            LabelButtons();
+            GenerateNewPuzzle();
         }
 
-        foreach (Button b in buttons)
+        private void AssignSymbolsToButtons()
         {
-            string posLabel = "";
-            if (b == leftButton) posLabel = "left";
-            else if (b == rightButton) posLabel = "right";
-            else if (b == topButton) posLabel = "top";
-            else if (b == downButton) posLabel = "down";
-            else posLabel = "unknown";
+            List<Sprite> shuffledSymbols = symbolSprites.ToList();
+            shuffledSymbols.Shuffle();
 
-            string symName = b.image.sprite.name.ToLower();
-            buttonData[b] = (posLabel, symName);
+            for (int i = 0; i < buttons.Length; i++)
+            {
+                buttons[i].image.sprite = shuffledSymbols[i];
+            }
         }
 
-        Debug.Log("(Position -> Symbol):");
-        foreach (var entry in buttonData)
+        private void LabelButtons()
         {
-            Debug.Log($"{entry.Value.position.ToUpper()} -> {entry.Value.symbol.ToUpper()}");
-        }
-    }
+            Button leftButton = buttons.OrderBy(button => GetAnchoredPosition(button).x).First();
+            Button rightButton = buttons.OrderByDescending(button => GetAnchoredPosition(button).x).First();
+            Button downButton = buttons.OrderBy(button => GetAnchoredPosition(button).y).First();
+            Button topButton = buttons.OrderByDescending(button => GetAnchoredPosition(button).y).First();
 
-    private void GenerateNewPuzzle()
-    {
-        Debug.Log("Generate new Sequence");
-        foreach (var button in buttons)
-            button.interactable = true;
+            buttonData = new Dictionary<Button, (string position, string symbol)>();
+            foreach (Button button in buttons)
+            {
+                string positionLabel;
+                if (button == leftButton) positionLabel = "left";
+                else if (button == rightButton) positionLabel = "right";
+                else if (button == topButton) positionLabel = "top";
+                else if (button == downButton) positionLabel = "down";
+                else positionLabel = "unknown";
 
-        List<Button> shuffledButtons = buttonData.Keys.ToList();
-        shuffledButtons = shuffledButtons.OrderBy(x => Random.value).ToList();
-
-        correctOrder = new List<Button>();
-        correctHints = new List<string>();
-        isHintPosition = new List<bool>();
-
-        foreach (Button b in shuffledButtons)
-        {
-            correctOrder.Add(b);
-            bool usePos = (Random.value < 0.5f);
-            isHintPosition.Add(usePos);
-            if (usePos)
-                correctHints.Add(buttonData[b].position);
-            else
-                correctHints.Add(buttonData[b].symbol);
+                buttonData[button] = (positionLabel, button.image.sprite.name.ToLowerInvariant());
+            }
         }
 
-        Debug.Log($"Correct order: {string.Join(", ", correctHints)}");
-        currentStep = 0;
-        UpdateInstructionDisplay();
-
-        foreach (var button in buttons)
+        private static Vector2 GetAnchoredPosition(Button button)
         {
-            button.onClick.RemoveAllListeners();
-            button.onClick.AddListener(() => OnButtonClick(button));
+            return button.GetComponent<RectTransform>().anchoredPosition;
         }
-    }
 
-    private void UpdateInstructionDisplay()
-    {
-        if (currentStep < correctOrder.Count)
+        private void GenerateNewPuzzle()
         {
-            string nextHint = correctHints[currentStep].ToUpper();
-            Debug.Log($"Click: {nextHint}");
+            correctOrder = buttonData.Keys.ToList();
+            correctOrder.Shuffle();
+            correctHints = new List<string>();
+            isHintPosition = new List<bool>();
+
+            foreach (Button button in correctOrder)
+            {
+                bool usePosition = Random.value < PositionHintChance;
+                isHintPosition.Add(usePosition);
+                correctHints.Add(usePosition ? buttonData[button].position : buttonData[button].symbol);
+            }
+
+            EditorLog.Log($"Correct order: {string.Join(", ", correctHints)}");
+            currentStep = 0;
+            UpdateInstructionDisplay();
+
+            foreach (Button button in buttons)
+            {
+                button.interactable = true;
+                button.onClick.RemoveAllListeners();
+                button.onClick.AddListener(() => OnButtonClick(button));
+            }
+        }
+
+        private void UpdateInstructionDisplay()
+        {
+            string nextHint = correctHints[currentStep];
             for (int i = 0; i < instructionImages.Length; i++)
             {
-                if (i < nextHint.Length)
+                bool hasLetter = i < nextHint.Length;
+                instructionImages[i].gameObject.SetActive(hasLetter);
+                if (hasLetter && letterDictionary.TryGetValue(nextHint[i].ToString(), out Sprite letterSprite))
                 {
-                    instructionImages[i].gameObject.SetActive(true);
-                    char letter = nextHint[i];
-                    string letterKey = letter.ToString().ToLower();
-                    if (letterDictionary.ContainsKey(letterKey))
-                    {
-                        instructionImages[i].sprite = letterDictionary[letterKey];
-                    }
-                }
-                else
-                {
-                    instructionImages[i].gameObject.SetActive(false);
+                    instructionImages[i].sprite = letterSprite;
                 }
             }
         }
-    }
 
-    public void OnButtonClick(Button clickedButton)
-    {
-        if (currentStep >= correctOrder.Count)
-            return;
-
-        var clickedData = buttonData[clickedButton];
-        string clickedSym = clickedData.symbol;
-        string clickedPos = clickedData.position;
-
-        Debug.Log($"Clicked: {clickedSym.ToUpper()} ({clickedPos.ToUpper()})");
-
-        string expected = correctHints[currentStep];
-        bool expectedIsPos = isHintPosition[currentStep];
-
-        bool isCorrect = expectedIsPos ? (clickedPos == expected) : (clickedSym == expected);
-
-        if (isCorrect)
+        public void OnButtonClick(Button clickedButton)
         {
-            Debug.Log($"Correct: {expected}");
+            if (currentStep >= correctOrder.Count)
+                return;
+
+            (string position, string symbol) clickedData = buttonData[clickedButton];
+            string clickedHint = isHintPosition[currentStep] ? clickedData.position : clickedData.symbol;
+
+            if (clickedHint != correctHints[currentStep])
+            {
+                OnFail();
+                return;
+            }
+
             clickedButton.interactable = false;
             currentStep++;
 
@@ -169,10 +133,6 @@ public class ButtonSequencePuzzle : PuzzleBase
                 OnComplete();
             else
                 UpdateInstructionDisplay();
-        }
-        else
-        {
-            OnFail();
         }
     }
 }

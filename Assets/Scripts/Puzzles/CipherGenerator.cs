@@ -1,69 +1,63 @@
-using UnityEngine;
 using System.Collections.Generic;
+using System.Text;
 
-public class CipherGenerator : MonoBehaviour
+namespace DefuseOrLose
 {
-    private List<char> evenLetters = new List<char> { 'A', 'B', 'D', 'G', 'F', 'H' };
-    private List<char> oddLetters = new List<char> { 'C', 'J', 'K', 'L', 'Z' };
-
-    private Dictionary<char, char> evenMappingLow = new Dictionary<char, char>
+    public class CipherGenerator
     {
-        { 'A', 'X' }, { 'B', 'Y' }, { 'D', 'W' }, { 'G', 'T' }, { 'F', 'M' }, { 'H', 'P' }
-    };
-    private Dictionary<char, char> oddMappingLow = new Dictionary<char, char>
-    {
-        { 'C', 'J' }, { 'J', 'K' }, { 'K', 'L' }, { 'L', 'Z' }, { 'Z', 'R' }
-    };
+        private const int WordLength = 5;
+        private const int DigitCount = 10;
+        private const int HighDigitThreshold = 5;
 
-    private Dictionary<char, char> evenMappingHigh = new Dictionary<char, char>
-    {
-        { 'A', 'N' }, { 'B', 'O' }, { 'D', 'U' }, { 'G', 'V' }, { 'F', 'S' }, { 'H', 'E' }
-    };
-    private Dictionary<char, char> oddMappingHigh = new Dictionary<char, char>
-    {
-        { 'C', 'Q' }, { 'J', 'B' }, { 'K', 'C' }, { 'L', 'D' }, { 'Z', 'A' }
-    };
+        private static readonly List<char> evenLetters = new List<char> { 'A', 'B', 'D', 'G', 'F', 'H' };
+        private static readonly List<char> oddLetters = new List<char> { 'C', 'J', 'K', 'L', 'Z' };
 
-    public string GenerateCipher(out string decryptedWord)
-    {
-        System.Random random = new System.Random();
-        decryptedWord = "";
-
-        string encryptedWord = "";
-
-        for (int i = 0; i < 5; i++)
+        private static readonly Dictionary<char, char> evenMappingLow = new Dictionary<char, char>
         {
-            int digit = random.Next(0, 10);
-            char letter;
+            { 'A', 'X' }, { 'B', 'Y' }, { 'D', 'W' }, { 'G', 'T' }, { 'F', 'M' }, { 'H', 'P' }
+        };
+        private static readonly Dictionary<char, char> oddMappingLow = new Dictionary<char, char>
+        {
+            { 'C', 'J' }, { 'J', 'K' }, { 'K', 'L' }, { 'L', 'Z' }, { 'Z', 'R' }
+        };
+        private static readonly Dictionary<char, char> evenMappingHigh = new Dictionary<char, char>
+        {
+            { 'A', 'N' }, { 'B', 'O' }, { 'D', 'U' }, { 'G', 'V' }, { 'F', 'S' }, { 'H', 'E' }
+        };
+        private static readonly Dictionary<char, char> oddMappingHigh = new Dictionary<char, char>
+        {
+            { 'C', 'Q' }, { 'J', 'B' }, { 'K', 'C' }, { 'L', 'D' }, { 'Z', 'A' }
+        };
 
-            if (digit % 2 == 0)
+        private readonly System.Random random = new System.Random();
+
+        public string GenerateCipher(out string decryptedWord)
+        {
+            StringBuilder encrypted = new StringBuilder();
+            StringBuilder decrypted = new StringBuilder();
+
+            for (int i = 0; i < WordLength; i++)
             {
-                letter = evenLetters[random.Next(evenLetters.Count)];
-            }
-            else
-            {
-                letter = oddLetters[random.Next(oddLetters.Count)];
+                int digit = random.Next(DigitCount);
+                bool isEvenDigit = digit % 2 == 0;
+                List<char> letters = isEvenDigit ? evenLetters : oddLetters;
+                char letter = letters[random.Next(letters.Count)];
+
+                encrypted.Append(digit).Append(letter);
+                decrypted.Append(SelectMapping(digit, isEvenDigit)[letter]);
             }
 
-            char decodedLetter;
-            if (digit < 5)
-            {
-                decodedLetter = digit % 2 == 0 ? evenMappingLow[letter] : oddMappingLow[letter];
-            }
-            else
-            {
-                decodedLetter = digit % 2 == 0 ? evenMappingHigh[letter] : oddMappingHigh[letter];
-            }
-
-            decryptedWord += decodedLetter;
-            encryptedWord += digit.ToString() + letter;
+            decryptedWord = decrypted.ToString();
+            return encrypted.ToString();
         }
 
-        Debug.Log($"Zaszyfrowane haslo: {encryptedWord}");
-        Debug.Log($"Odszyfrowane haslo: {decryptedWord}");
-
-        return encryptedWord;
+        private static Dictionary<char, char> SelectMapping(int digit, bool isEvenDigit)
+        {
+            if (digit < HighDigitThreshold)
+            {
+                return isEvenDigit ? evenMappingLow : oddMappingLow;
+            }
+            return isEvenDigit ? evenMappingHigh : oddMappingHigh;
+        }
     }
 }
-
-

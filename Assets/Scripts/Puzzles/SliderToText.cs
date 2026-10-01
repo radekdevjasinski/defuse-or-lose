@@ -2,16 +2,22 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SliderToText : MonoBehaviour
+namespace DefuseOrLose
 {
-    private TMP_Text text;
-    public Slider slider;
-    void Start()
+    public class SliderToText : MonoBehaviour
     {
-        text = GetComponent<TMP_Text>();
-    }
-    public void UpdateValue()
-    {
-        text.text = slider.value.ToString();
+        [SerializeField] private Slider slider;
+
+        private TMP_Text text;
+
+        void Awake()
+        {
+            text = GetComponent<TMP_Text>();
+        }
+
+        public void UpdateValue()
+        {
+            text.text = slider.value.ToString();
+        }
     }
 }

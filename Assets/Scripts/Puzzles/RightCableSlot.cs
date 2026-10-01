@@ -1,13 +1,13 @@
-﻿using UnityEngine;
-using UnityEngine.EventSystems;
+using UnityEngine;
 
-public class RightCableSlot : MonoBehaviour, IDropHandler
+namespace DefuseOrLose
 {
-    [HideInInspector] public bool isUsed = false;
-    public int rightSlotIndex;  // Ustaw w Inspectorze (0 = slot 1, 1 = slot 2, itd.)
-
-    public void OnDrop(PointerEventData eventData)
+    public class RightCableSlot : MonoBehaviour
     {
-        Debug.Log("[RightCableSlot] OnDrop: Slot dropped on " + gameObject.name);
+        [Tooltip("Zero-based: 0 is slot 1, 1 is slot 2.")]
+        [SerializeField] private int rightSlotIndex;
+
+        public int RightSlotIndex => rightSlotIndex;
+        public bool IsUsed { get; set; }
     }
 }

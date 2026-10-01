@@ -1,33 +1,34 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 using TMPro;
 
-public class LevelButton : MonoBehaviour
+namespace DefuseOrLose
 {
-    public TMP_Text levelNameText;
-    public TMP_Text minutesText;
-    public TMP_Text strikesText;
-    public TMP_Text puzzlesText;
-    public Button button;
-
-    private int sceneIndex;
-
-    public void Setup(string levelName, int minutes, int strikes, int puzzles, int sceneIndex)
+    public class LevelButton : MonoBehaviour
     {
-        levelNameText.text = levelName;
-        minutesText.text = minutes + " Minutes";
-        strikesText.text = strikes + " Strikes";
-        puzzlesText.text = puzzles + " Puzzles";
-        this.sceneIndex = sceneIndex;
+        [SerializeField] private TMP_Text levelNameText;
+        [SerializeField] private TMP_Text minutesText;
+        [SerializeField] private TMP_Text strikesText;
+        [SerializeField] private TMP_Text puzzlesText;
+        [SerializeField] private Button button;
 
-        button.onClick.RemoveAllListeners();
-        button.onClick.AddListener(() => LoadLevel());
-    }
+        private int sceneIndex;
 
-    void LoadLevel()
-    {
-        Debug.Log("Loading level: " + levelNameText.text + " (Scene index: " + sceneIndex + ")");
-        SceneManager.LoadScene(sceneIndex);
+        public void Setup(LevelData levelData)
+        {
+            levelNameText.text = levelData.levelName;
+            minutesText.text = Mathf.RoundToInt(levelData.timeLimitMinutes) + " Minutes";
+            strikesText.text = levelData.maxStrikes + " Strikes";
+            puzzlesText.text = levelData.puzzlesCount + " Puzzles";
+            sceneIndex = levelData.sceneIndex;
+
+            button.onClick.RemoveAllListeners();
+            button.onClick.AddListener(LoadLevel);
+        }
+
+        void LoadLevel()
+        {
+            SceneLoader.LoadScene(sceneIndex);
+        }
     }
 }

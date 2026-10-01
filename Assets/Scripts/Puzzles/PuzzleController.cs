@@ -1,46 +1,65 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
-public class Puzzle
+namespace DefuseOrLose
 {
-    public GameObject prefab;
-    public bool isCompleted = false;
-    public Puzzle(GameObject prefab)
+    public class PuzzleController : MonoBehaviour
     {
-        this.prefab = prefab;
-    }
-}
-public class PuzzleController : MonoBehaviour
-{
-    public GameObject[] puzzlePrefabs;
-    public List<Puzzle> activePuzzles = new List<Puzzle>();
-    public int puzzles;
-    private ScreenDistributor screenDistributor;
+        [SerializeField] private GameObject[] puzzlePrefabs;
+        [SerializeField] private int puzzles;
 
+        private readonly List<Puzzle> activePuzzles = new List<Puzzle>();
+        private ScreenDistributor screenDistributor;
 
-    void Start()
-    {
-        screenDistributor = GetComponent<ScreenDistributor>();
-        ChoosePuzzles();
-        screenDistributor.DisplayPuzzle(activePuzzles[0].prefab);
-        screenDistributor.SpawnIcons();
-    }
+        public IReadOnlyList<Puzzle> ActivePuzzles => activePuzzles;
 
+        public bool AreAllPuzzlesCompleted => activePuzzles.All(puzzle => puzzle.IsCompleted);
 
-    void ChoosePuzzles()
-    {
-        if (puzzlePrefabs.Length == 0) return;
-        
-        activePuzzles.Clear();
-        List<GameObject> randomPrefabs = new List<GameObject>(puzzlePrefabs);
-
-        for (int i = 0; i < puzzles; i++)
+        void Awake()
         {
-            int randomIndex = Random.Range(0, randomPrefabs.Count);
-            GameObject selectedPrefab = randomPrefabs[randomIndex];
-            Puzzle puzzle = new Puzzle(selectedPrefab);
-            activePuzzles.Add(puzzle);        
-            randomPrefabs.RemoveAt(randomIndex);
+            screenDistributor = GetComponent<ScreenDistributor>();
+        }
+
+        void Start()
+        {
+            ChoosePuzzles();
+            if (activePuzzles.Count == 0)
+            {
+                Debug.LogError("PuzzleController: no puzzles to display, check puzzlePrefabs and puzzles count.");
+                return;
+            }
+            screenDistributor.DisplayPuzzle(activePuzzles[0].Prefab);
+            screenDistributor.RefreshIcons();
+        }
+
+        public void SetPuzzleCount(int puzzleCount)
+        {
+            puzzles = puzzleCount;
+        }
+
+        public bool HasUncompletedPuzzleOtherThan(int puzzleIndex)
+        {
+            return activePuzzles.Where((puzzle, index) => index != puzzleIndex && !puzzle.IsCompleted).Any();
+        }
+
+        void ChoosePuzzles()
+        {
+            int puzzleCount = Mathf.Min(puzzles, puzzlePrefabs.Length);
+            if (puzzleCount < puzzles)
+            {
+                Debug.LogWarning($"PuzzleController: requested {puzzles} puzzles but only {puzzlePrefabs.Length} prefabs are assigned.");
+            }
+
+            activePuzzles.Clear();
+            List<GameObject> remainingPrefabs = new List<GameObject>(puzzlePrefabs);
+
+            for (int i = 0; i < puzzleCount; i++)
+            {
+                int randomIndex = Random.Range(0, remainingPrefabs.Count);
+                activePuzzles.Add(new Puzzle(remainingPrefabs[randomIndex]));
+                remainingPrefabs.RemoveAt(randomIndex);
+            }
         }
     }
 }

@@ -1,76 +1,92 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-public class AudioManager : MonoBehaviour
+namespace DefuseOrLose
 {
-    public static AudioManager Instance;
-
-    public GameObject uiClickSource; 
-    private AudioSource click;
-
-    public GameObject[] events;
-
-    private Dictionary<GameObject, AudioSource> sounds = new Dictionary<GameObject, AudioSource>();
-    public GameObject[] ambients;
-
-
-    private void Awake()
+    public class AudioManager : MonoBehaviour
     {
-        if (Instance == null)
-            Instance = this;
-        else
-            Destroy(gameObject);
-    }
+        private const float MinClickPitch = 0.5f;
+        private const float MaxClickPitch = 1.5f;
 
-    private void Start()
-    {
-        foreach (GameObject ambient in ambients)
+        public static AudioManager Instance { get; private set; }
+
+        [SerializeField] private GameObject uiClickSource;
+        [SerializeField] private GameObject[] events;
+        [SerializeField] private GameObject[] ambients;
+
+        private readonly Dictionary<GameObject, AudioSource> sounds = new Dictionary<GameObject, AudioSource>();
+        private AudioSource click;
+        private AudioSource clipSource;
+
+        private void Awake()
         {
-            GameObject ambientSound = Instantiate(ambient, transform);
-            ambientSound.GetComponent<AudioSource>().Play();
-        }
-        click = Instantiate(uiClickSource,transform).GetComponent<AudioSource>();
-        foreach (GameObject sound in events)
-        {
-            GameObject soundSource = Instantiate(sound, transform);
-            sounds.Add(sound, soundSource.GetComponent<AudioSource>());
-        }
-    }
-    void Update()
-    {
-         if (Input.GetMouseButtonDown(0))
-        {
-            PlayClickSound();
-        }
-    }
-
-    public void PlayClickSound()
-    {
-        click.pitch = Random.Range(0.5f, 1.5f);
-        click.Play();
-    }
-    public void PlaySound(GameObject sound)
-    {
-        if (sounds.ContainsKey(sound))
-            sounds[sound].Play();
-    }
-    public void StopAllSounds()
-    {
-        foreach (Transform child in transform)
-        {
-            AudioSource audioSource = child.GetComponent<AudioSource>();
-            if (audioSource != null)
+            if (Instance != null)
             {
-                audioSource.Stop();
+                Destroy(gameObject);
+                return;
+            }
+
+            Instance = this;
+            clipSource = gameObject.AddComponent<AudioSource>();
+            clipSource.playOnAwake = false;
+        }
+
+        private void Start()
+        {
+            foreach (GameObject ambient in ambients)
+            {
+                GameObject ambientSound = Instantiate(ambient, transform);
+                ambientSound.GetComponent<AudioSource>().Play();
+            }
+            click = Instantiate(uiClickSource, transform).GetComponent<AudioSource>();
+            foreach (GameObject sound in events)
+            {
+                GameObject soundSource = Instantiate(sound, transform);
+                sounds.Add(sound, soundSource.GetComponent<AudioSource>());
+            }
+        }
+
+        void Update()
+        {
+            if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+            {
+                PlayClickSound();
+            }
+        }
+
+        public void PlayClickSound()
+        {
+            click.pitch = Random.Range(MinClickPitch, MaxClickPitch);
+            click.Play();
+        }
+
+        public void PlaySound(GameObject sound)
+        {
+            if (!sounds.TryGetValue(sound, out AudioSource source))
+            {
+                Debug.LogWarning($"AudioManager: sound '{sound.name}' is not registered in events.");
+                return;
+            }
+            source.Play();
+        }
+
+        public void PlayClip(AudioClip clip)
+        {
+            clipSource.PlayOneShot(clip);
+        }
+
+        public void StopAllSounds()
+        {
+            clipSource.Stop();
+            foreach (Transform child in transform)
+            {
+                AudioSource audioSource = child.GetComponent<AudioSource>();
+                if (audioSource != null)
+                {
+                    audioSource.Stop();
+                }
             }
         }
     }
-    public void AddSound(GameObject sound)
-    {
-        if (sounds.ContainsKey(sound)) return;
-        GameObject soundSource = Instantiate(sound, transform);
-        sounds.Add(sound, soundSource.GetComponent<AudioSource>());
-    }
-
 }

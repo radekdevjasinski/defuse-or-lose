@@ -1,39 +1,26 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class EndScreenManager : MonoBehaviour
+namespace DefuseOrLose
 {
-    public Button returnToMenuButton;
-    public Button exitButton;
-
-    private void Start()
+    public class EndScreenManager : MonoBehaviour
     {
-        if (returnToMenuButton != null)
+        [SerializeField] private Button returnToMenuButton;
+        [SerializeField] private Button exitButton;
+
+        private void Start()
         {
-            returnToMenuButton.onClick.RemoveAllListeners();
-            returnToMenuButton.onClick.AddListener(ReturnToMenu);
+            if (returnToMenuButton != null)
+            {
+                returnToMenuButton.onClick.RemoveAllListeners();
+                returnToMenuButton.onClick.AddListener(SceneLoader.LoadMenu);
+            }
+
+            if (exitButton != null)
+            {
+                exitButton.onClick.RemoveAllListeners();
+                exitButton.onClick.AddListener(SceneLoader.QuitGame);
+            }
         }
-
-        if (exitButton != null)
-        {
-            exitButton.onClick.RemoveAllListeners();
-            exitButton.onClick.AddListener(ExitGame);
-        }
-    }
-
-    void ReturnToMenu()
-    {
-        Debug.Log("Return to Menu clicked.");
-        SceneManager.LoadScene(0);
-    }
-
-    void ExitGame()
-    {
-        Debug.Log("Exit Game clicked.");
-        Application.Quit();
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-#endif
     }
 }

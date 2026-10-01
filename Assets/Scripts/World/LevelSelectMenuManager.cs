@@ -1,31 +1,24 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using System.Collections.Generic;
-using System.Linq;
 
-public class LevelSelectMenuManager : MonoBehaviour
+namespace DefuseOrLose
 {
-    public Transform buttonContainer;         // Kontener (pusty obiekt z Grid Layout Group)
-    public GameObject levelButtonPrefab;        // Prefab przycisku poziomu
-
-    void Start()
+    public class LevelSelectMenuManager : MonoBehaviour
     {
-        // Ładujemy wszystkie LevelData z folderu Resources/Levels
-        LevelData[] levelDatas = Resources.LoadAll<LevelData>("Levels");
-        // Sortujemy według sceneIndex, aby przyciski były uporządkowane
-        var sortedLevels = levelDatas.OrderBy(ld => ld.sceneIndex).ToArray();
+        [SerializeField] private Transform buttonContainer;
+        [SerializeField] private GameObject levelButtonPrefab;
 
-        foreach (LevelData ld in sortedLevels)
+        void Start()
         {
-            GameObject buttonObj = Instantiate(levelButtonPrefab, buttonContainer);
-            LevelButton levelButton = buttonObj.GetComponent<LevelButton>();
-            if (levelButton != null)
+            foreach (LevelData levelData in LevelCatalog.LoadLevelsInSceneOrder())
             {
-                levelButton.Setup(ld.levelName, Mathf.RoundToInt(ld.timeRemaining), ld.maxStrikes, ld.puzzlesCount, ld.sceneIndex);
-            }
-            else
-            {
-                Debug.LogError("Prefab LevelButton nie posiada skryptu LevelButton!");
+                GameObject buttonObject = Instantiate(levelButtonPrefab, buttonContainer);
+                LevelButton levelButton = buttonObject.GetComponent<LevelButton>();
+                if (levelButton == null)
+                {
+                    Debug.LogError("LevelSelectMenuManager: level button prefab has no LevelButton component.");
+                    return;
+                }
+                levelButton.Setup(levelData);
             }
         }
     }

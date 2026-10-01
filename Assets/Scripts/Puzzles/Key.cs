@@ -1,26 +1,30 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Key : MonoBehaviour
+namespace DefuseOrLose
 {
-    public char keyChar;
-    public KeyboardPuzzle keyboardPuzzle;
-    private Button button;
-    public bool isAnswerKey;
-
-    public void SetKey(char keyChar, KeyboardPuzzle keyboardPuzzle)
+    public class Key : MonoBehaviour
     {
-        this.keyChar = keyChar;
-        this.keyboardPuzzle = keyboardPuzzle;
-        button = GetComponent<Button>();
-        button.onClick.AddListener(ClickKey);
-        isAnswerKey = false;
+        private char keyChar;
+        private KeyboardPuzzle keyboardPuzzle;
 
+        public void SetKey(char keyChar, KeyboardPuzzle keyboardPuzzle)
+        {
+            this.keyboardPuzzle = keyboardPuzzle;
+            SetCharacter(keyChar);
+            GetComponent<Button>().onClick.AddListener(ClickKey);
+        }
+
+        public void SetCharacter(char keyChar)
+        {
+            this.keyChar = keyChar;
+            name = keyChar + " key";
+            GetComponentInChildren<TMPro.TMP_Text>().text = keyChar.ToString();
+        }
+
+        void ClickKey()
+        {
+            keyboardPuzzle.KeyClicked(keyChar);
+        }
     }
-
-    public void ClickKey()
-    {
-        keyboardPuzzle.KeyClicked(keyChar);
-    }
-
 }

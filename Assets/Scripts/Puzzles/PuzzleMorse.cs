@@ -1,32 +1,55 @@
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PuzzleMorse : PuzzleBase
+namespace DefuseOrLose
 {
-    public int code = 1;
-    private MorseGenerator morseGenerator;
-    [SerializeField] private Slider slider;
-    public override void Initialize()
+    public class PuzzleMorse : PuzzleBase
     {
-        code = UnityEngine.Random.Range(1,100);
-        morseGenerator = GameObject.Find("tablet_morse_light").GetComponent<MorseGenerator>();
-        morseGenerator.StartMorseLoop(code);
-    }
-    void Start()
-    {
-        Initialize();
-    }
-    public void Submit()
-    {
-        int value = Mathf.FloorToInt(slider.value);
-        if(value == code)
+        private const int MinCode = 1;
+        private const int MaxCode = 99;
+
+        [SerializeField] private Slider slider;
+
+        private MorseGenerator morseGenerator;
+        private int code;
+
+        void Start()
         {
-            OnComplete();
+            Initialize();
         }
-        else
+
+        void OnDestroy()
         {
-            OnFail();
+            if (morseGenerator != null)
+            {
+                morseGenerator.StopMorseLoop(this);
+            }
+        }
+
+        public override void Initialize()
+        {
+            code = Random.Range(MinCode, MaxCode + 1);
+            EditorLog.Log($"Morse answer: {code}");
+
+            morseGenerator = FindAnyObjectByType<MorseGenerator>();
+            if (morseGenerator == null)
+            {
+                Debug.LogError("PuzzleMorse: no MorseGenerator in scene.");
+                return;
+            }
+            morseGenerator.StartMorseLoop(code, this);
+        }
+
+        public void Submit()
+        {
+            if (Mathf.FloorToInt(slider.value) == code)
+            {
+                OnComplete();
+            }
+            else
+            {
+                OnFail();
+            }
         }
     }
 }

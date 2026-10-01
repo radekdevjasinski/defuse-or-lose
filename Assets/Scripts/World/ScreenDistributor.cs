@@ -1,122 +1,100 @@
-using UnityEngine;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEngine.UI;
+using UnityEngine;
 
-public class ScreenDistributor : MonoBehaviour
+namespace DefuseOrLose
 {
-    [Header("Refs")]
-    public PuzzleController puzzleController;
-    public Transform iconsContainer;
-    public GameObject puzzleIconEmpty;
-    public GameObject puzzleIconFilled;
-
-    public int currentPuzzleIndex = 0;
-    private GameObject activePuzzle;
-    [Header("Icons")]
-    public List<GameObject> puzzleIcons = new();
-
-    private void Start()
+    public class ScreenDistributor : MonoBehaviour
     {
-        puzzleController = GetComponent<PuzzleController>();
-    }
-    public void DisplayPuzzle(GameObject puzzlePrefab)
-    {
+        private const float CurrentIconScale = 1.5f;
+        private const int StepRight = 1;
+        private const int StepLeft = -1;
 
-        if (activePuzzle != null)
+        [Header("Refs")]
+        [SerializeField] private Transform iconsContainer;
+        [SerializeField] private GameObject puzzleIconEmpty;
+        [SerializeField] private GameObject puzzleIconFilled;
+
+        private readonly List<GameObject> emptyIcons = new List<GameObject>();
+        private readonly List<GameObject> filledIcons = new List<GameObject>();
+        private PuzzleController puzzleController;
+
+        public event Action<GameObject> PuzzleDisplayed;
+
+        public int CurrentPuzzleIndex { get; private set; }
+        public GameObject ActivePuzzle { get; private set; }
+
+        private void Awake()
         {
-            if(activePuzzle?.GetComponentInChildren<PuzzleMorse>()!= null)
+            puzzleController = GetComponent<PuzzleController>();
+            foreach (Transform placeholderIcon in iconsContainer)
             {
-                GameObject.Find("tablet_morse_light").GetComponent<MorseGenerator>().StopMorseLoop();
-            }
-            if(activePuzzle?.GetComponentInChildren<EntryphonePuzzle>() != null)
-            {
-                activePuzzle.GetComponentInChildren<EntryphonePuzzle>().StopAllCoroutines();
-            }
-            Destroy(activePuzzle);
-        }
-        activePuzzle = Instantiate(puzzlePrefab, transform);
-    }
-    public void ReloadPuzzle()
-    {
-        DisplayPuzzle(puzzleController.activePuzzles[currentPuzzleIndex].prefab);
-    }
-    public void NextPuzzleRight()
-    {
-        List<Puzzle> uncompleted = new List<Puzzle>();
-        foreach (Puzzle puzzle in puzzleController.activePuzzles)
-        {
-            if (!puzzle.isCompleted)
-            {
-                uncompleted.Add(puzzle);
+                Destroy(placeholderIcon.gameObject);
             }
         }
-        if (uncompleted.Count <= 1) return;
 
-        do
+        public void DisplayPuzzle(GameObject puzzlePrefab)
         {
-            currentPuzzleIndex++;
-            if (currentPuzzleIndex >= puzzleController.activePuzzles.Count)
+            if (ActivePuzzle != null)
             {
-                currentPuzzleIndex = 0;
+                Destroy(ActivePuzzle);
             }
-        } while (puzzleController.activePuzzles[currentPuzzleIndex].isCompleted);
+            ActivePuzzle = Instantiate(puzzlePrefab, transform);
+            PuzzleDisplayed?.Invoke(ActivePuzzle);
+        }
 
-        DisplayPuzzle(puzzleController.activePuzzles[currentPuzzleIndex].prefab);
-        SpawnIcons();
-    }
-
-    public void NextPuzzleLeft()
-    {
-        List<Puzzle> uncompleted = new List<Puzzle>();
-        foreach (Puzzle puzzle in puzzleController.activePuzzles)
+        public void ReloadPuzzle()
         {
-            if (!puzzle.isCompleted)
+            DisplayPuzzle(puzzleController.ActivePuzzles[CurrentPuzzleIndex].Prefab);
+        }
+
+        public void NextPuzzleRight()
+        {
+            StepPuzzle(StepRight);
+        }
+
+        public void NextPuzzleLeft()
+        {
+            StepPuzzle(StepLeft);
+        }
+
+        public void RefreshIcons()
+        {
+            IReadOnlyList<Puzzle> puzzles = puzzleController.ActivePuzzles;
+            EnsureIconPool(puzzles.Count);
+
+            for (int i = 0; i < puzzles.Count; i++)
             {
-                uncompleted.Add(puzzle);
+                Vector3 iconScale = i == CurrentPuzzleIndex ? Vector3.one * CurrentIconScale : Vector3.one;
+                emptyIcons[i].SetActive(!puzzles[i].IsCompleted);
+                emptyIcons[i].transform.localScale = iconScale;
+                filledIcons[i].SetActive(puzzles[i].IsCompleted);
+                filledIcons[i].transform.localScale = iconScale;
             }
         }
-        if (uncompleted.Count <= 1) return;
 
-        do
+        private void StepPuzzle(int direction)
         {
-            currentPuzzleIndex--;
-            if (currentPuzzleIndex < 0)
+            if (!puzzleController.HasUncompletedPuzzleOtherThan(CurrentPuzzleIndex))
+                return;
+
+            IReadOnlyList<Puzzle> puzzles = puzzleController.ActivePuzzles;
+            do
             {
-                currentPuzzleIndex = puzzleController.activePuzzles.Count - 1;
-            }
-        } while (puzzleController.activePuzzles[currentPuzzleIndex].isCompleted);
+                CurrentPuzzleIndex = (CurrentPuzzleIndex + direction + puzzles.Count) % puzzles.Count;
+            } while (puzzles[CurrentPuzzleIndex].IsCompleted);
 
-        DisplayPuzzle(puzzleController.activePuzzles[currentPuzzleIndex].prefab);
-        SpawnIcons();
-    }
-    public void SpawnIcons()
-    {
-        foreach (Transform child in iconsContainer)
-        {
-            Destroy(child.gameObject);
+            DisplayPuzzle(puzzles[CurrentPuzzleIndex].Prefab);
+            RefreshIcons();
         }
-        puzzleIcons.Clear();
 
-        for (int i = 0; i < puzzleController.activePuzzles.Count; i++)
+        private void EnsureIconPool(int puzzleCount)
         {
-            GameObject icon;
-            if (puzzleController.activePuzzles[i].isCompleted)
-                icon = Instantiate(puzzleIconFilled, iconsContainer);
-            else
-                icon = Instantiate(puzzleIconEmpty, iconsContainer);
-
-
-            if (i == currentPuzzleIndex)
+            while (emptyIcons.Count < puzzleCount)
             {
-                icon.transform.localScale = Vector3.one * 1.5f;
+                emptyIcons.Add(Instantiate(puzzleIconEmpty, iconsContainer));
+                filledIcons.Add(Instantiate(puzzleIconFilled, iconsContainer));
             }
-            else
-            {
-                icon.transform.localScale = Vector3.one;
-            }
-            puzzleIcons.Add(icon);
         }
     }
-
 }

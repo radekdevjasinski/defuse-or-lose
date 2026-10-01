@@ -4,63 +4,59 @@ using TMPro;
 using System.Collections.Generic;
 using System.Linq;
 
-public class CipherPuzzle : PuzzleBase
+namespace DefuseOrLose
 {
-    public LetterField[] letterFields;
-    public TextMeshProUGUI encryptedText;
-    public Button checkButton;
-    public CipherGenerator cipherGenerator;
-
-    private string correctWord;
-    private List<char> allLetters;
-
-    private void Start()
+    public class CipherPuzzle : PuzzleBase
     {
-        Initialize();
-        checkButton.onClick.AddListener(CheckSolution);
-    }
+        private const string Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        private const int LettersPerField = 9;
 
-    public override void Initialize()
-    {
-        encryptedText.text = cipherGenerator.GenerateCipher(out correctWord);
-        System.Random random = new System.Random();
+        [SerializeField] private LetterField[] letterFields;
+        [SerializeField] private TextMeshProUGUI encryptedText;
+        [SerializeField] private Button checkButton;
 
-        for (int i = 0; i < letterFields.Length; i++)
+        private readonly CipherGenerator cipherGenerator = new CipherGenerator();
+        private string correctWord;
+
+        private void Start()
         {
-            List<char> availableLetters = new List<char> { correctWord[i] };
+            Initialize();
+            checkButton.onClick.AddListener(CheckSolution);
+        }
 
-            List<char> pool = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToList();
-            pool.Remove(correctWord[i]);
+        public override void Initialize()
+        {
+            encryptedText.text = cipherGenerator.GenerateCipher(out correctWord);
+            EditorLog.Log($"Cipher: {encryptedText.text} -> {correctWord}");
 
-            while (availableLetters.Count < 9)
+            for (int i = 0; i < letterFields.Length; i++)
             {
-                char extra = pool[random.Next(pool.Count)];
-                availableLetters.Add(extra);
-                pool.Remove(extra);
+                letterFields[i].Initialize(BuildLetterPool(correctWord[i]));
             }
+        }
 
-            availableLetters = availableLetters.OrderBy(x => random.Next()).ToList();
-            
-            Debug.Log($"Pole {i + 1}: Poprawna litera: {correctWord[i]} | Pula liter: {string.Join(", ", availableLetters)}");
-            
-            letterFields[i].Initialize(correctWord[i], availableLetters);
-        }
-    }
+        private static List<char> BuildLetterPool(char correctLetter)
+        {
+            List<char> decoys = Alphabet.Where(letter => letter != correctLetter).ToList();
+            decoys.Shuffle();
 
-    private void CheckSolution()
-    {
-        string playerWord = "";
-        foreach (var field in letterFields)
-        {
-            playerWord += field.GetCurrentLetter();
+            List<char> pool = decoys.Take(LettersPerField - 1).ToList();
+            pool.Add(correctLetter);
+            pool.Shuffle();
+            return pool;
         }
-        if (playerWord == correctWord)
+
+        private void CheckSolution()
         {
-            OnComplete();
-        }
-        else
-        {
-            OnFail();
+            string playerWord = string.Concat(letterFields.Select(field => field.GetCurrentLetter()));
+            if (playerWord == correctWord)
+            {
+                OnComplete();
+            }
+            else
+            {
+                OnFail();
+            }
         }
     }
 }

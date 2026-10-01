@@ -1,97 +1,87 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 
-public class CableDrag : PuzzleBase, IBeginDragHandler, IDragHandler, IEndDragHandler
+namespace DefuseOrLose
 {
-    public GameObject cablePrefab;
-    private Cable currentCable;
-    private Canvas canvas;
-    public int leftSlotIndex;
-
-    public override void Initialize()
+    public class CableDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
-        canvas = GetComponentInParent<Canvas>();
-    }
-    void Start()
-    {
-        Initialize();
-    }
+        [SerializeField] private GameObject cablePrefab;
+        [SerializeField] private int leftSlotIndex;
 
-    public void OnBeginDrag(PointerEventData eventData)
-    {
-        if (CablePuzzleManager.Instance != null && CablePuzzleManager.Instance.IsLeftSlotLocked(leftSlotIndex))
-            return;
+        private Cable currentCable;
+        private Canvas canvas;
+        private RectTransform canvasRect;
 
-        if (canvas == null)
-            return;
-
-        GameObject cableObj = Instantiate(cablePrefab, canvas.transform);
-        currentCable = cableObj.GetComponent<Cable>();
-        if (currentCable == null)
-            return;
-
-        RectTransform rt = GetComponent<RectTransform>();
-        currentCable.startPos = rt.position;
-        currentCable.endPos = rt.position;
-        CursorController.instance.SetCursorHold();
-    }
-
-    public void OnDrag(PointerEventData eventData)
-    {
-        if (currentCable != null)
+        void Awake()
         {
-            RectTransform canvasRect = canvas.GetComponent<RectTransform>();
-            Vector2 localPoint;
-            if (RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, eventData.position, eventData.pressEventCamera, out localPoint))
-            {
-                Rect rect = canvasRect.rect;
-                localPoint.x = Mathf.Clamp(localPoint.x, rect.xMin, rect.xMax);
-                localPoint.y = Mathf.Clamp(localPoint.y, rect.yMin, rect.yMax);
-                Vector3 clampedWorldPos = canvasRect.TransformPoint(localPoint);
-                currentCable.endPos = clampedWorldPos;
-                CursorController.instance.SetCursorHold();
-            }
+            canvas = GetComponentInParent<Canvas>();
+            canvasRect = canvas.GetComponent<RectTransform>();
         }
-    }
 
-    public void OnEndDrag(PointerEventData eventData)
-    {
-        if (currentCable == null)
-            return;
-
-        List<RaycastResult> results = new List<RaycastResult>();
-        EventSystem.current.RaycastAll(eventData, results);
-        bool foundSlot = false;
-
-        foreach (RaycastResult result in results)
+        public void OnBeginDrag(PointerEventData eventData)
         {
-            RightCableSlot slot = result.gameObject.GetComponent<RightCableSlot>();
-            if (slot != null && !slot.isUsed)
+            if (CablePuzzleManager.Instance.IsLeftSlotLocked(leftSlotIndex))
+                return;
+
+            currentCable = Instantiate(cablePrefab, canvas.transform).GetComponent<Cable>();
+            currentCable.SetStart(transform.position);
+            currentCable.SetEnd(transform.position);
+            CursorController.Instance.SetCursorHold();
+        }
+
+        public void OnDrag(PointerEventData eventData)
+        {
+            if (currentCable == null)
+                return;
+
+            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, eventData.position, eventData.pressEventCamera, out Vector2 localPoint))
+                return;
+
+            Rect rect = canvasRect.rect;
+            localPoint.x = Mathf.Clamp(localPoint.x, rect.xMin, rect.xMax);
+            localPoint.y = Mathf.Clamp(localPoint.y, rect.yMin, rect.yMax);
+            currentCable.SetEnd(canvasRect.TransformPoint(localPoint));
+            CursorController.Instance.SetCursorHold();
+        }
+
+        public void OnEndDrag(PointerEventData eventData)
+        {
+            if (currentCable == null)
+                return;
+
+            if (TryFindFreeSlot(eventData, out RightCableSlot slot))
             {
-                RectTransform slotRT = result.gameObject.GetComponent<RectTransform>();
-                if (slotRT != null)
+                currentCable.SetEnd(slot.transform.position);
+                slot.IsUsed = true;
+                CablePuzzleManager.Instance.RegisterConnection(leftSlotIndex, slot.RightSlotIndex);
+            }
+            else
+            {
+                Destroy(currentCable.gameObject);
+            }
+
+            currentCable = null;
+            CursorController.Instance.SetCursorDefault();
+        }
+
+        private static bool TryFindFreeSlot(PointerEventData eventData, out RightCableSlot freeSlot)
+        {
+            List<RaycastResult> results = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(eventData, results);
+
+            foreach (RaycastResult result in results)
+            {
+                RightCableSlot slot = result.gameObject.GetComponent<RightCableSlot>();
+                if (slot != null && !slot.IsUsed)
                 {
-                    currentCable.endPos = slotRT.position;
-                    slot.isUsed = true;
-                    foundSlot = true;
-                    if (CablePuzzleManager.Instance != null)
-                    {
-                        CablePuzzleManager.Instance.RegisterConnection(this.leftSlotIndex, slot.rightSlotIndex);
-                    }
-                    break;
+                    freeSlot = slot;
+                    return true;
                 }
             }
-        }
 
-        if (!foundSlot)
-        {
-            Destroy(currentCable.gameObject);
+            freeSlot = null;
+            return false;
         }
-
-        currentCable = null;
-        CursorController.instance.SetCursorDefault();
     }
-
-
 }

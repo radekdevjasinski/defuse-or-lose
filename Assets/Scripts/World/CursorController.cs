@@ -1,68 +1,71 @@
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
-public class CursorController : MonoBehaviour
+namespace DefuseOrLose
 {
-    public static CursorController instance;
-    void Awake()
+    public class CursorController : MonoBehaviour
     {
-        if (instance == null)
-        {
-            instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
-    void Start()
-    {
-        //SetCursorDefault();
-    }
-    public Texture2D[] cursorTextures;
-    public CursorMode cursorMode = CursorMode.Auto;
-    public Vector2 hand;
-    public Vector2 hold;
-    public Vector2 disabled;
-    private bool disabledMode = false;
+        private const int DefaultTextureIndex = 0;
+        private const int HandTextureIndex = 1;
+        private const int HoldTextureIndex = 2;
+        private const int DisabledTextureIndex = 3;
 
-    public void SetCursorDefault()
-    {
-        if (disabledMode)
+        public static CursorController Instance { get; private set; }
+
+        [SerializeField] private Texture2D[] cursorTextures;
+        [SerializeField] private CursorMode cursorMode = CursorMode.Auto;
+        [SerializeField] private Vector2 hand;
+        [SerializeField] private Vector2 hold;
+        [SerializeField] private Vector2 disabled;
+
+        private bool isDisabledMode = false;
+
+        void Awake()
         {
-            SetCursorDisabled();
-            return;
+            if (Instance == null)
+            {
+                Instance = this;
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
         }
-        Cursor.SetCursor(cursorTextures[0], Vector2.zero, cursorMode);
-    }
-    public void SetCursorHand()
-    {
-        if (disabledMode)
+
+        public void SetCursorDefault()
         {
-            SetCursorDisabled();
-            return;
+            ApplyCursor(DefaultTextureIndex, Vector2.zero);
         }
-        Cursor.SetCursor(cursorTextures[1], hand, cursorMode);
-    }
-    public void SetCursorHold()
-    {
-        if (disabledMode)
+
+        public void SetCursorHand()
         {
-            SetCursorDisabled();
-            return;
+            ApplyCursor(HandTextureIndex, hand);
         }
-        Cursor.SetCursor(cursorTextures[2], hold, cursorMode);
-    }
-    public void SetCursorDisabled()
-    {
-        disabledMode = true;
-        Cursor.SetCursor(cursorTextures[3], disabled, cursorMode);
-    }
-    public void SetCursorEnabled()
-    {
-        disabledMode = false;
-        SetCursorDefault();
+
+        public void SetCursorHold()
+        {
+            ApplyCursor(HoldTextureIndex, hold);
+        }
+
+        public void SetCursorDisabled()
+        {
+            isDisabledMode = true;
+            ApplyCursor(DisabledTextureIndex, disabled);
+        }
+
+        public void SetCursorEnabled()
+        {
+            isDisabledMode = false;
+            SetCursorDefault();
+        }
+
+        private void ApplyCursor(int textureIndex, Vector2 hotspot)
+        {
+            if (isDisabledMode)
+            {
+                Cursor.SetCursor(cursorTextures[DisabledTextureIndex], disabled, cursorMode);
+                return;
+            }
+            Cursor.SetCursor(cursorTextures[textureIndex], hotspot, cursorMode);
+        }
     }
 }
-

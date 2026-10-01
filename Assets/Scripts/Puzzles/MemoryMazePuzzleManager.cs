@@ -1,186 +1,166 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
-using System.Collections.Generic;
 
-public enum ButtonPosition { TL = 0, TR = 1, BL = 2, BR = 3 }
-
-public class MemoryMazePuzzleManager : PuzzleBase
+namespace DefuseOrLose
 {
-    [Header("UI References")]
-    public Button[] buttons;
-
-    [Header("Blinking Settings")]
-    public Color normalColor = new Color(0f, 0.91f, 0f);
-    public Color blinkColor = Color.black;
-    public float blinkDuration = 0.5f;
-
-    [Header("Puzzle Settings")]
-    private int currentPhase = 0;
-    private ButtonPosition[] blinkedPositions = new ButtonPosition[5];
-    private ButtonPosition[] pressedPositions = new ButtonPosition[5];
-
-    private bool phaseActive = false;
-
-    public override void Initialize()
+    public class MemoryMazePuzzleManager : PuzzleBase
     {
-        Debug.Log("[MemoryMazePuzzleManager] Initialize() called.");
-        currentPhase = 0;
-        StartCoroutine(StartPhaseCoroutine());
-    }
+        private const int PhaseCount = 5;
+        private const int ButtonCount = 4;
+        private const float DelayBeforeBlinkSeconds = 1f;
 
-    void Start()
-    {
-        Debug.Log("[MemoryMazePuzzleManager] Start() called.");
-        Initialize();
-    }
+        [Header("UI References")]
+        [SerializeField] private Button[] buttons;
 
-    IEnumerator StartPhaseCoroutine()
-    {
-        phaseActive = false;
-        yield return new WaitForSeconds(1f);
-        
-        if (buttons == null || buttons.Length < 4)
+        [Header("Blinking Settings")]
+        [SerializeField] private Color normalColor = new Color(0f, 0.91f, 0f);
+        [SerializeField] private Color blinkColor = Color.black;
+        [SerializeField] private float blinkDuration = 0.5f;
+
+        private readonly ButtonPosition[] blinkedPositions = new ButtonPosition[PhaseCount];
+        private readonly ButtonPosition[] pressedPositions = new ButtonPosition[PhaseCount];
+        private int currentPhase = 0;
+        private bool phaseActive = false;
+
+        void Start()
         {
-            Debug.LogError("[MemoryMazePuzzleManager] Brak przypisanych przycisków w tablicy 'buttons'.");
-            yield break;
+            Initialize();
         }
 
-        ButtonPosition chosen = (ButtonPosition)Random.Range(0, 4);
-        blinkedPositions[currentPhase] = chosen;
-        Debug.Log("[MemoryMazePuzzleManager] Etap " + (currentPhase + 1) + " – Miganie: " + chosen.ToString());
-        yield return StartCoroutine(BlinkButton(chosen));
-        phaseActive = true;
-    }
-
-IEnumerator BlinkButton(ButtonPosition pos)
-{
-    Button btn = buttons[(int)pos];
-    if (btn == null)
-    {
-        Debug.LogError("[MemoryMazePuzzleManager] Brak przycisku dla pozycji " + pos.ToString());
-        yield break;
-    }
-    btn.interactable = false;
-    btn.image.color = blinkColor;
-    Debug.Log("[MemoryMazePuzzleManager] Miganie (blokada) przycisku " + pos.ToString() + " rozpoczęte.");
-    yield return new WaitForSeconds(blinkDuration);
-    btn.interactable = true;
-    btn.image.color = normalColor;
-    Debug.Log("[MemoryMazePuzzleManager] Miganie zakończone, przycisk " + pos.ToString() + " ponownie interaktywny.");
-}
-
-
-    public void OnButtonPressed(int buttonIndex)
-    {
-        if (!phaseActive)
+        public override void Initialize()
         {
-            Debug.LogWarning("[MemoryMazePuzzleManager] Ignoruję naciśnięcie, etap jeszcze nie aktywny.");
-            return;
+            if (buttons == null || buttons.Length < ButtonCount)
+            {
+                Debug.LogError("MemoryMazePuzzleManager: all four buttons must be assigned.");
+                return;
+            }
+
+            currentPhase = 0;
+            StartCoroutine(StartPhaseCoroutine());
         }
 
-        ButtonPosition pressed = (ButtonPosition)buttonIndex;
-        Debug.Log("[MemoryMazePuzzleManager] Naciśnięto przycisk: " + pressed.ToString());
-
-        ButtonPosition expected = GetExpectedPosition(currentPhase);
-        Debug.Log("[MemoryMazePuzzleManager] Etap " + (currentPhase + 1) + " – Oczekiwany przycisk: " + expected.ToString());
-
-        if (pressed == expected)
+        public void OnButtonPressed(int buttonIndex)
         {
+            if (!phaseActive)
+                return;
+
+            ButtonPosition pressed = (ButtonPosition)buttonIndex;
+            if (pressed != GetExpectedPosition(currentPhase))
+            {
+                OnFail();
+                return;
+            }
+
             pressedPositions[currentPhase] = pressed;
-            Debug.Log("[MemoryMazePuzzleManager] Etap " + (currentPhase + 1) + " poprawny: naciśnięto " + pressed.ToString());
             phaseActive = false;
             currentPhase++;
-            if (currentPhase >= 5)
-            {
-                Debug.Log("[MemoryMazePuzzleManager] Puzzle rozwiązane!");
+
+            if (currentPhase >= PhaseCount)
                 OnComplete();
-            }
             else
-            {
                 StartCoroutine(StartPhaseCoroutine());
+        }
+
+        IEnumerator StartPhaseCoroutine()
+        {
+            phaseActive = false;
+            yield return new WaitForSeconds(DelayBeforeBlinkSeconds);
+
+            ButtonPosition chosen = (ButtonPosition)Random.Range(0, ButtonCount);
+            blinkedPositions[currentPhase] = chosen;
+            EditorLog.Log($"Memory phase {currentPhase + 1}: blink {chosen}, press {GetExpectedPosition(currentPhase)}");
+
+            yield return StartCoroutine(BlinkButton(chosen));
+            phaseActive = true;
+        }
+
+        IEnumerator BlinkButton(ButtonPosition position)
+        {
+            Button button = buttons[(int)position];
+            button.interactable = false;
+            button.image.color = blinkColor;
+            yield return new WaitForSeconds(blinkDuration);
+            button.interactable = true;
+            button.image.color = normalColor;
+        }
+
+        ButtonPosition GetExpectedPosition(int phase)
+        {
+            switch (phase)
+            {
+                case 0: return GetExpectedInFirstPhase();
+                case 1: return GetExpectedInSecondPhase();
+                case 2: return GetExpectedInThirdPhase();
+                case 3: return GetExpectedInFourthPhase();
+                default: return GetExpectedInFifthPhase();
             }
         }
-        else
+
+        ButtonPosition GetExpectedInFirstPhase()
         {
-            Debug.LogError("[MemoryMazePuzzleManager] Błąd w etapie " + (currentPhase + 1) + "! Oczekiwano: " + expected.ToString() + " – Resetowanie zagadki.");
-            OnFail();
-            ResetPuzzle();
+            switch (blinkedPositions[0])
+            {
+                case ButtonPosition.TL: return ButtonPosition.TR;
+                case ButtonPosition.TR: return ButtonPosition.BL;
+                case ButtonPosition.BL: return ButtonPosition.BR;
+                default: return ButtonPosition.TL;
+            }
         }
-    }
 
-    ButtonPosition GetExpectedPosition(int phase)
-    {
-        int globalStrikes = BombController.instance != null ? BombController.instance.strikes : 0;
-
-        switch (phase)
+        ButtonPosition GetExpectedInSecondPhase()
         {
-            case 0:
-                switch (blinkedPositions[0])
-                {
-                    case ButtonPosition.TL: return ButtonPosition.TR;
-                    case ButtonPosition.TR: return ButtonPosition.BL;
-                    case ButtonPosition.BL: return ButtonPosition.BR;
-                    case ButtonPosition.BR: return ButtonPosition.TL;
-                }
-                break;
-            case 1:
-                switch (blinkedPositions[1])
-                {
-                    case ButtonPosition.TL: return blinkedPositions[0];
-                    case ButtonPosition.TR: return pressedPositions[0];
-                    case ButtonPosition.BL: return GetOpposite(blinkedPositions[0]);
-                    case ButtonPosition.BR: return blinkedPositions[0];
-                }
-                break;
-            case 2:
-                switch (blinkedPositions[2])
-                {
-                    case ButtonPosition.TL: return (globalStrikes >= 1) ? blinkedPositions[1] : blinkedPositions[0];
-                    case ButtonPosition.TR: return pressedPositions[0];
-                    case ButtonPosition.BL: return blinkedPositions[1];
-                    case ButtonPosition.BR: return GetOpposite(pressedPositions[0]);
-                }
-                break;
-            case 3:
-                switch (blinkedPositions[3])
-                {
-                    case ButtonPosition.TL: return pressedPositions[0];
-                    case ButtonPosition.TR: return pressedPositions[1];
-                    case ButtonPosition.BL: return blinkedPositions[2];
-                    case ButtonPosition.BR: return GetOpposite(pressedPositions[1]);
-                }
-                break;
-            case 4:
-                switch (blinkedPositions[4])
-                {
-                    case ButtonPosition.TL: return blinkedPositions[0];
-                    case ButtonPosition.TR: return blinkedPositions[1];
-                    case ButtonPosition.BL: return blinkedPositions[3];
-                    case ButtonPosition.BR: return blinkedPositions[2];
-                }
-                break;
+            switch (blinkedPositions[1])
+            {
+                case ButtonPosition.TL: return blinkedPositions[0];
+                case ButtonPosition.TR: return pressedPositions[0];
+                case ButtonPosition.BL: return GetOpposite(blinkedPositions[0]);
+                default: return blinkedPositions[0];
+            }
         }
-        return ButtonPosition.TL;
-    }
 
-    ButtonPosition GetOpposite(ButtonPosition pos)
-    {
-        switch (pos)
+        ButtonPosition GetExpectedInThirdPhase()
         {
-            case ButtonPosition.TL: return ButtonPosition.BR;
-            case ButtonPosition.TR: return ButtonPosition.BL;
-            case ButtonPosition.BL: return ButtonPosition.TR;
-            case ButtonPosition.BR: return ButtonPosition.TL;
+            switch (blinkedPositions[2])
+            {
+                case ButtonPosition.TL: return BombController.Instance.Strikes >= 1 ? blinkedPositions[1] : blinkedPositions[0];
+                case ButtonPosition.TR: return pressedPositions[0];
+                case ButtonPosition.BL: return blinkedPositions[1];
+                default: return GetOpposite(pressedPositions[0]);
+            }
         }
-        return ButtonPosition.TL;
-    }
 
-    void ResetPuzzle()
-    {
-        currentPhase = 0;
-        phaseActive = false;
-        Debug.Log("[MemoryMazePuzzleManager] Puzzle reset – wracamy do etapu 1.");
-        StartCoroutine(StartPhaseCoroutine());
+        ButtonPosition GetExpectedInFourthPhase()
+        {
+            switch (blinkedPositions[3])
+            {
+                case ButtonPosition.TL: return pressedPositions[0];
+                case ButtonPosition.TR: return pressedPositions[1];
+                case ButtonPosition.BL: return blinkedPositions[2];
+                default: return GetOpposite(pressedPositions[1]);
+            }
+        }
+
+        ButtonPosition GetExpectedInFifthPhase()
+        {
+            switch (blinkedPositions[4])
+            {
+                case ButtonPosition.TL: return blinkedPositions[0];
+                case ButtonPosition.TR: return blinkedPositions[1];
+                case ButtonPosition.BL: return blinkedPositions[3];
+                default: return blinkedPositions[2];
+            }
+        }
+
+        static ButtonPosition GetOpposite(ButtonPosition position)
+        {
+            switch (position)
+            {
+                case ButtonPosition.TL: return ButtonPosition.BR;
+                case ButtonPosition.TR: return ButtonPosition.BL;
+                case ButtonPosition.BL: return ButtonPosition.TR;
+                default: return ButtonPosition.TL;
+            }
+        }
     }
 }

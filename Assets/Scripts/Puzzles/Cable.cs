@@ -1,23 +1,31 @@
-﻿using UnityEngine;
+using UnityEngine;
 
-public class Cable : MonoBehaviour
+namespace DefuseOrLose
 {
-    private LineRenderer lr;
-    [HideInInspector] public Vector3 startPos;
-    [HideInInspector] public Vector3 endPos;
-
-    void Awake()
+    public class Cable : MonoBehaviour
     {
-        lr = GetComponent<LineRenderer>();
-        lr.positionCount = 2;
-        lr.numCapVertices = 10;
-        lr.numCornerVertices = 10;
-        //Debug.Log("[Cable] Awake: LineRenderer initialized.");
-    }
+        private const int StartPointIndex = 0;
+        private const int EndPointIndex = 1;
+        private const int RoundingVertices = 10;
 
-    void Update()
-    {
-        lr.SetPosition(0, startPos);
-        lr.SetPosition(1, endPos);
+        private LineRenderer lineRenderer;
+
+        void Awake()
+        {
+            lineRenderer = GetComponent<LineRenderer>();
+            lineRenderer.positionCount = 2;
+            lineRenderer.numCapVertices = RoundingVertices;
+            lineRenderer.numCornerVertices = RoundingVertices;
+        }
+
+        public void SetStart(Vector3 position)
+        {
+            lineRenderer.SetPosition(StartPointIndex, position);
+        }
+
+        public void SetEnd(Vector3 position)
+        {
+            lineRenderer.SetPosition(EndPointIndex, position);
+        }
     }
 }

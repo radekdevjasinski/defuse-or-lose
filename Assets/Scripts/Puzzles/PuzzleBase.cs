@@ -1,17 +1,19 @@
 using UnityEngine;
 
-public abstract class PuzzleBase : MonoBehaviour
+namespace DefuseOrLose
 {
-    public PuzzleController puzzleController;
-
-    public abstract void Initialize();
-
-    protected virtual void OnComplete()
+    public abstract class PuzzleBase : MonoBehaviour
     {
-        GameController.instance.WinPuzzle();
-    }
-    protected virtual void OnFail()
-    {
-        GameController.instance.LosePuzzle();
+        public abstract void Initialize();
+
+        protected virtual void OnComplete()
+        {
+            GameController.Instance.WinPuzzle();
+        }
+
+        protected virtual void OnFail()
+        {
+            GameController.Instance.LosePuzzle();
+        }
     }
 }

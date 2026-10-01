@@ -1,18 +1,31 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
-public class ButtonChangeCursor : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+namespace DefuseOrLose
 {
-    public void OnPointerEnter(PointerEventData eventData)
+    public class ButtonChangeCursor : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
-        CursorController.instance.SetCursorHand();
-        
-    }
+        private bool isHovered;
 
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        CursorController.instance.SetCursorDefault();
-    }
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            isHovered = true;
+            CursorController.Instance.SetCursorHand();
+        }
 
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            isHovered = false;
+            CursorController.Instance.SetCursorDefault();
+        }
+
+        void OnDisable()
+        {
+            if (!isHovered || CursorController.Instance == null)
+                return;
+
+            isHovered = false;
+            CursorController.Instance.SetCursorDefault();
+        }
+    }
 }

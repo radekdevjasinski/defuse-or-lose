@@ -1,89 +1,99 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
-public class MorseGenerator : MonoBehaviour
+namespace DefuseOrLose
 {
-    //true kropka, false kreska
-    private static readonly Dictionary<char, bool[]> morseDigits = new Dictionary<char, bool[]>
+    public class MorseGenerator : MonoBehaviour
     {
-        { '0', new bool[] { false, false, false, false, false } },
-        { '1', new bool[] { true, false, false, false, false } },
-        { '2', new bool[] { true, true, false, false, false } },
-        { '3', new bool[] { true, true, true, false, false } },
-        { '4', new bool[] { true, true, true, true, false } },
-        { '5', new bool[] { true, true, true, true, true } },
-        { '6', new bool[] { false, true, true, true, true } },
-        { '7', new bool[] { false, false, true, true, true } },
-        { '8', new bool[] { false, false, false, true, true } },
-        { '9', new bool[] { false, false, false, false, true } }
-    };
+        private const int MinNumber = 1;
+        private const int MaxNumber = 99;
+        private const bool Dot = true;
+        private const bool Dash = false;
 
-    public GameObject light_on; 
-    public GameObject light_off; 
-    public float dotDuration;
-    public float dashDuration;
-    public float pauseDuration;
-    public float letterPause;
-
-    private bool isPlaying = false;
-
-    public void StartMorseLoop(int number)
-    {
-        Debug.Log(number);
-        if (number < 1 || number > 99)
+        private static readonly Dictionary<char, bool[]> morseDigits = new Dictionary<char, bool[]>
         {
-            Debug.LogError("Liczba musi być w zakresie 1-99!");
-            return;
-        }
-        StopMorseLoop();
-        TurnLight(false);
-        isPlaying = true;
-        StartCoroutine(PlayMorseLoop(number));
-    }
+            { '0', new bool[] { Dash, Dash, Dash, Dash, Dash } },
+            { '1', new bool[] { Dot, Dash, Dash, Dash, Dash } },
+            { '2', new bool[] { Dot, Dot, Dash, Dash, Dash } },
+            { '3', new bool[] { Dot, Dot, Dot, Dash, Dash } },
+            { '4', new bool[] { Dot, Dot, Dot, Dot, Dash } },
+            { '5', new bool[] { Dot, Dot, Dot, Dot, Dot } },
+            { '6', new bool[] { Dash, Dot, Dot, Dot, Dot } },
+            { '7', new bool[] { Dash, Dash, Dot, Dot, Dot } },
+            { '8', new bool[] { Dash, Dash, Dash, Dot, Dot } },
+            { '9', new bool[] { Dash, Dash, Dash, Dash, Dot } }
+        };
 
-    void TurnLight(bool on)
-    {
+        [FormerlySerializedAs("light_on")]
+        [SerializeField] private GameObject lightOn;
+        [FormerlySerializedAs("light_off")]
+        [SerializeField] private GameObject lightOff;
+        [SerializeField] private float dotDuration;
+        [SerializeField] private float dashDuration;
+        [SerializeField] private float pauseDuration;
+        [SerializeField] private float letterPause;
 
-        light_on?.SetActive(on);
-        light_off?.SetActive(!on);
+        private Object loopOwner;
 
-    }
-
-    public void StopMorseLoop()
-    {
-        isPlaying = false;
-        StopAllCoroutines();
-        TurnLight(true);
-    }
-
-    private IEnumerator PlayMorseLoop(int number)
-    {
-        string numberStr = number.ToString();
-        List<bool> morseCode = new List<bool>();
-
-        foreach (char digit in numberStr)
+        public void StartMorseLoop(int number, Object owner)
         {
-            morseCode.AddRange(morseDigits[digit]);
-        }
-        
-        TurnLight(false);
-        yield return new WaitForSeconds(letterPause);
-        while (isPlaying)
-        {
-            foreach (bool signal in morseCode)
+            if (number < MinNumber || number > MaxNumber)
             {
-                if (!isPlaying) yield break;
+                Debug.LogError($"MorseGenerator: number must be between {MinNumber} and {MaxNumber}, got {number}.");
+                return;
+            }
+            loopOwner = owner;
+            StopAllCoroutines();
+            StartCoroutine(PlayMorseLoop(number));
+        }
 
-                TurnLight(true);
-                yield return new WaitForSeconds(signal ? dotDuration : dashDuration);
+        public void StopMorseLoop(Object owner)
+        {
+            if (!ReferenceEquals(loopOwner, owner))
+                return;
 
-                TurnLight(false);
-                yield return new WaitForSeconds(pauseDuration);
+            loopOwner = null;
+            StopAllCoroutines();
+            TurnLight(true);
+        }
+
+        void TurnLight(bool on)
+        {
+            if (lightOn != null)
+            {
+                lightOn.SetActive(on);
+            }
+            if (lightOff != null)
+            {
+                lightOff.SetActive(!on);
+            }
+        }
+
+        private IEnumerator PlayMorseLoop(int number)
+        {
+            List<bool> morseCode = new List<bool>();
+            foreach (char digit in number.ToString())
+            {
+                morseCode.AddRange(morseDigits[digit]);
             }
 
-            yield return new WaitForSeconds(letterPause); 
+            TurnLight(false);
+            yield return new WaitForSeconds(letterPause);
+            while (true)
+            {
+                foreach (bool signal in morseCode)
+                {
+                    TurnLight(true);
+                    yield return new WaitForSeconds(signal == Dot ? dotDuration : dashDuration);
+
+                    TurnLight(false);
+                    yield return new WaitForSeconds(pauseDuration);
+                }
+
+                yield return new WaitForSeconds(letterPause);
+            }
         }
     }
 }

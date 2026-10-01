@@ -1,55 +1,73 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using System.Collections;
 
-public class CameraController : MonoBehaviour
+namespace DefuseOrLose
 {
-    public Vector3 targetPosition; // Docelowa pozycja kamery
-    public float targetSize;  // Docelowa wielkość kamery
-    public float duration;    // Czas animacji
-
-    private Camera cam;
-    private Vector3 startPosition;
-    private float startSize;
-    private bool isAnimating = false;
-    private bool toggled = false; // Czy kamera jest w pozycji docelowej?
-
-    void Start()
+    public class CameraController : MonoBehaviour
     {
-        cam = Camera.main;
-        startPosition = cam.transform.position;
-        startSize = cam.orthographicSize;
-    }
+        [SerializeField] private Vector3 targetPosition;
+        [SerializeField] private float targetSize;
+        [SerializeField] private float duration;
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space) && !isAnimating)
+        private Camera cam;
+        private Vector3 startPosition;
+        private float startSize;
+        private Vector3 basePosition;
+        private bool isAnimating = false;
+        private bool isZoomedIn = false;
+
+        public Vector3 ShakeOffset { get; set; }
+
+        void Start()
         {
-            Vector3 newPosition = toggled ? startPosition : targetPosition;
-            float newSize = toggled ? startSize : targetSize;
+            cam = Camera.main;
+            startPosition = cam.transform.position;
+            startSize = cam.orthographicSize;
+            basePosition = startPosition;
+        }
+
+        void Update()
+        {
+            if (isAnimating || !WasZoomKeyPressed())
+                return;
+
+            Vector3 newPosition = isZoomedIn ? startPosition : targetPosition;
+            float newSize = isZoomedIn ? startSize : targetSize;
 
             StartCoroutine(AnimateCamera(newPosition, newSize));
-            toggled = !toggled; // Zmiana stanu
+            isZoomedIn = !isZoomedIn;
         }
-    }
 
-    IEnumerator AnimateCamera(Vector3 newPosition, float newSize)
-    {
-        isAnimating = true;
-        float elapsed = 0f;
-        Vector3 initialPosition = cam.transform.position;
-        float initialSize = cam.orthographicSize;
-
-        while (elapsed < duration)
+        void LateUpdate()
         {
-            elapsed += Time.deltaTime;
-            float t = elapsed / duration;
-            cam.transform.position = Vector3.Lerp(initialPosition, newPosition, t);
-            cam.orthographicSize = Mathf.Lerp(initialSize, newSize, t);
-            yield return null;
+            cam.transform.position = basePosition + ShakeOffset;
         }
 
-        cam.transform.position = newPosition;
-        cam.orthographicSize = newSize;
-        isAnimating = false;
+        static bool WasZoomKeyPressed()
+        {
+            return Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame;
+        }
+
+        IEnumerator AnimateCamera(Vector3 newPosition, float newSize)
+        {
+            isAnimating = true;
+            float elapsed = 0f;
+            Vector3 initialPosition = basePosition;
+            float initialSize = cam.orthographicSize;
+
+            while (elapsed < duration)
+            {
+                elapsed += Time.deltaTime;
+                float t = elapsed / duration;
+                basePosition = Vector3.Lerp(initialPosition, newPosition, t);
+                cam.orthographicSize = Mathf.Lerp(initialSize, newSize, t);
+                yield return null;
+            }
+
+            basePosition = newPosition;
+            cam.orthographicSize = newSize;
+            isAnimating = false;
+        }
     }
 }

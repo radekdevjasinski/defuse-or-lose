@@ -2494,7 +2494,6 @@ GameObject:
   m_Component:
   - component: {fileID: 56373672521566687}
   - component: {fileID: 650684075113561779}
-  - component: {fileID: 7517133102036507930}
   m_Layer: 0
   m_Name: CipherPuzzle
   m_TagString: Untagged
@@ -2538,19 +2537,6 @@ MonoBehaviour:
   - {fileID: 2647744896933447606}
   encryptedText: {fileID: 3195781139008282806}
   checkButton: {fileID: 9097996927252436593}
-  cipherGenerator: {fileID: 7517133102036507930}
---- !u!114 &7517133102036507930
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6770882243252395660}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fde2a8953a4e2848a287f98173cf04f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &7449789251518275060
 GameObject:
   m_ObjectHideFlags: 0

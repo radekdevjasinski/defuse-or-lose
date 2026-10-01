@@ -1,44 +1,49 @@
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-public class BlinkingLight2D : MonoBehaviour
+namespace DefuseOrLose
 {
-    public Light2D light2D;  
-    public float minIntensity = 0.2f; 
-    public float maxIntensity = 1.0f; 
-    public float speed = 2.0f;  
-    public bool randomBlinking = false; 
-
-    private float targetIntensity;
-    private float t = 0;
-
-    private void Start()
+    public class BlinkingLight2D : MonoBehaviour
     {
-        if (light2D == null)
-        {
-            light2D = GetComponent<Light2D>();
-        }
+        private const float TargetReachedTolerance = 0.05f;
 
-        targetIntensity = maxIntensity;
-    }
+        [SerializeField] private Light2D light2D;
+        [SerializeField] private float minIntensity = 0.2f;
+        [SerializeField] private float maxIntensity = 1.0f;
+        [SerializeField] private float speed = 2.0f;
+        [SerializeField] private bool randomBlinking = false;
 
-    private void Update()
-    {
-        if (randomBlinking)
+        private float targetIntensity;
+        private float t = 0;
+
+        private void Start()
         {
-            if (Mathf.Abs(light2D.intensity - targetIntensity) < 0.05f)
+            if (light2D == null)
             {
-                targetIntensity = Random.Range(minIntensity, maxIntensity);
-                t = 0;
+                light2D = GetComponent<Light2D>();
             }
-        }
-        else
-        {
-            if (light2D.intensity >= maxIntensity) targetIntensity = minIntensity;
-            else if (light2D.intensity <= minIntensity) targetIntensity = maxIntensity;
+
+            targetIntensity = maxIntensity;
         }
 
-        t += Time.deltaTime * speed;
-        light2D.intensity = Mathf.Lerp(light2D.intensity, targetIntensity, t);
+        private void Update()
+        {
+            if (randomBlinking)
+            {
+                if (Mathf.Abs(light2D.intensity - targetIntensity) < TargetReachedTolerance)
+                {
+                    targetIntensity = Random.Range(minIntensity, maxIntensity);
+                    t = 0;
+                }
+            }
+            else
+            {
+                if (light2D.intensity >= maxIntensity) targetIntensity = minIntensity;
+                else if (light2D.intensity <= minIntensity) targetIntensity = maxIntensity;
+            }
+
+            t += Time.deltaTime * speed;
+            light2D.intensity = Mathf.Lerp(light2D.intensity, targetIntensity, t);
+        }
     }
 }

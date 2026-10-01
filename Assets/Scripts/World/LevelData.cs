@@ -1,11 +1,19 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
-[CreateAssetMenu(fileName = "New Level Data", menuName = "Level Data", order = 51)]
-public class LevelData : ScriptableObject
+namespace DefuseOrLose
 {
-    public int sceneIndex;
-    public string levelName;
-    public float timeRemaining;
-    public int maxStrikes;
-    public int puzzlesCount;
+    [CreateAssetMenu(fileName = "New Level Data", menuName = "Level Data", order = 51)]
+    public class LevelData : ScriptableObject
+    {
+        private const float SecondsPerMinute = 60f;
+
+        public int sceneIndex;
+        public string levelName;
+        [FormerlySerializedAs("timeRemaining")] public float timeLimitMinutes;
+        public int maxStrikes;
+        public int puzzlesCount;
+
+        public float TimeLimitSeconds => timeLimitMinutes * SecondsPerMinute;
+    }
 }

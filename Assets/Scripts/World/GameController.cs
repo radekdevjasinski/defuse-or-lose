@@ -1,94 +1,122 @@
 using UnityEngine;
-using System.Linq;
-using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 using System.Collections;
 
-public class GameController : MonoBehaviour
+namespace DefuseOrLose
 {
-    [Header("Refs")]
-    public static GameController instance;
-    public PuzzleController puzzleController;
-    public BombController bombController;
-    public ScreenDistributor screenDistributor;
-    public int maxStrikes = 3;
+    public class GameController : MonoBehaviour
+    {
+        private const float ExplosionDelaySeconds = 1f;
+        private const float FreezeDelaySeconds = 1.5f;
 
-    [Header("Screens")]
-    public GameObject winScreen;
-    public GameObject loseScreen;
-    [Header("Sounds")]
-    public GameObject explodeSound;
-    public GameObject winSound;
-    public GameObject loseSound;
-    void Awake()
-    {
-        if (instance == null)
+        public static GameController Instance { get; private set; }
+
+        [Header("Refs")]
+        [SerializeField] private PuzzleController puzzleController;
+        [SerializeField] private BombController bombController;
+        [SerializeField] private ScreenDistributor screenDistributor;
+        [SerializeField] private int maxStrikes = 3;
+
+        [Header("Screens")]
+        [SerializeField] private GameObject winScreen;
+        [SerializeField] private GameObject loseScreen;
+
+        [Header("Sounds")]
+        [SerializeField] private GameObject explodeSound;
+        [SerializeField] private GameObject winSound;
+        [SerializeField] private GameObject loseSound;
+
+        private bool isGameOver = false;
+
+        public ScreenDistributor ScreenDistributor => screenDistributor;
+
+        void Awake()
         {
-            instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
-    public void LosePuzzle()
-    {
-        AudioManager.Instance.PlaySound(loseSound);
-        bombController.AddStrike();
-        if (bombController.strikes >= maxStrikes)
-        {
-            LoseGame();
-        }
-        screenDistributor.ReloadPuzzle();
-    }
-    public void WinPuzzle()
-    {
-        AudioManager.Instance.PlaySound(winSound);
-        int winIndex = screenDistributor.currentPuzzleIndex;
-        screenDistributor.NextPuzzleRight();
-        puzzleController.activePuzzles[winIndex].isCompleted = true;
-        screenDistributor.SpawnIcons();
-        CheckPuzzles();
-    }
-    void CheckPuzzles()
-    {
-        foreach (Puzzle puzzle in puzzleController.activePuzzles)
-        {
-            if (!puzzle.isCompleted)
+            if (Instance != null)
             {
+                Destroy(gameObject);
                 return;
             }
+
+            Instance = this;
+            ApplyLevelData();
         }
-        WinGame();
-    }
-    public void LoseGame()
-    {
-        //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        loseScreen.SetActive(true);
-        bombController.timerRunning = false;
-        AudioManager.Instance.StopAllSounds();
-        StartCoroutine(LoseGameCoroutine());
 
-    }
-    IEnumerator LoseGameCoroutine()
-    {
-        yield return new WaitForSeconds(1f);
-        loseScreen.GetComponent<Animator>().SetTrigger("lose");
-        AudioManager.Instance.PlaySound(explodeSound);
-        yield return new WaitForSeconds(1.5f);
-        Time.timeScale = 0f;
-
-    }
-    public void WinGame()
-    {
-        winScreen.SetActive(true);
-        bombController.timerRunning = false;
-        winScreen.GetComponent<Animator>().SetTrigger("win");
-    }
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        void Update()
         {
-            UnityEngine.SceneManagement.SceneManager.LoadScene("Menu");
+            if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+            {
+                SceneLoader.LoadMenu();
+            }
+        }
+
+        public void LosePuzzle()
+        {
+            if (isGameOver)
+                return;
+
+            AudioManager.Instance.PlaySound(loseSound);
+            bombController.AddStrike();
+            if (bombController.Strikes >= maxStrikes)
+            {
+                LoseGame();
+                return;
+            }
+            screenDistributor.ReloadPuzzle();
+        }
+
+        public void WinPuzzle()
+        {
+            if (isGameOver)
+                return;
+
+            AudioManager.Instance.PlaySound(winSound);
+            puzzleController.ActivePuzzles[screenDistributor.CurrentPuzzleIndex].IsCompleted = true;
+            screenDistributor.NextPuzzleRight();
+            screenDistributor.RefreshIcons();
+            if (puzzleController.AreAllPuzzlesCompleted)
+            {
+                WinGame();
+            }
+        }
+
+        public void LoseGame()
+        {
+            if (isGameOver)
+                return;
+
+            isGameOver = true;
+            loseScreen.SetActive(true);
+            bombController.StopTimer();
+            AudioManager.Instance.StopAllSounds();
+            StartCoroutine(LoseGameCoroutine());
+        }
+
+        void WinGame()
+        {
+            isGameOver = true;
+            winScreen.SetActive(true);
+            bombController.StopTimer();
+            winScreen.GetComponent<Animator>().SetTrigger("win");
+        }
+
+        void ApplyLevelData()
+        {
+            if (!LevelCatalog.TryFindForScene(gameObject.scene.buildIndex, out LevelData levelData))
+                return;
+
+            maxStrikes = levelData.maxStrikes;
+            bombController.SetTimeLimit(levelData.TimeLimitSeconds);
+            puzzleController.SetPuzzleCount(levelData.puzzlesCount);
+        }
+
+        IEnumerator LoseGameCoroutine()
+        {
+            yield return new WaitForSeconds(ExplosionDelaySeconds);
+            loseScreen.GetComponent<Animator>().SetTrigger("lose");
+            AudioManager.Instance.PlaySound(explodeSound);
+            yield return new WaitForSeconds(FreezeDelaySeconds);
+            Time.timeScale = 0f;
         }
     }
 }

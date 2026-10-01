@@ -3,174 +3,110 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Sound
+namespace DefuseOrLose
 {
-    public GameObject audioObject;
-    public int startingNumber;
-    public char operation1;
-    public int secondNumber;
-    public char operation2;
-    public int thirdNumber;
-    public Sound(GameObject audioObject, int startingNumber, char operation1, int secondNumber, char operation2, int thirdNumber)
+    public class EntryphonePuzzle : PuzzleBase
     {
-        this.audioObject = audioObject;
-        this.startingNumber = startingNumber;
-        this.operation1 = operation1;
-        this.secondNumber = secondNumber;
-        this.operation2 = operation2;
-        this.thirdNumber = thirdNumber;
-    }
-    public float Operation1(float value)
-    {
-        switch (operation1)
-        {
-            case '+':
-                return value + secondNumber;
-            case '-':
-                return value - secondNumber;
-            case '*':
-                return value * secondNumber;
-            case '/':
-                return value / secondNumber;
-            default:
-                return value;
-        }
-    }
-    public float Operation2(float value)
-    {
-        switch (operation2)
-        {
-            case '+':
-                return value + thirdNumber;
-            case '-':
-                return value - thirdNumber;
-            case '*':
-                return value * thirdNumber;
-            case '/':
-                return value / thirdNumber;
-            default:
-                return value;
-        }
-    }
-}
+        private const int MaxInputLength = 3;
+        private const int SelectedSoundCount = 3;
+        private const float PauseBetweenSoundsSeconds = 0.5f;
+        private const char EmptyInputCharacter = '_';
 
-public class EntryphonePuzzle : PuzzleBase
-{
-    public AudioClip[] clips;
-    public List<Sound> sounds = new List<Sound>();
-    public List<Sound> selectedSounds;
-    public Button phoneButton;
-    public string input = "";
-    public TMPro.TMP_Text inputText;
-    private int answer = 0;
-    public override void Initialize()
-    {
-        sounds = new List<Sound>
-        {
-            new Sound(CreateAudioObject(clips[0]), 8, '+', 4, '*', 2),
-            new Sound(CreateAudioObject(clips[1]), 12, '-', 6, '+', 5),
-            new Sound(CreateAudioObject(clips[2]), 15, '*', 2, '/', 5),
-            new Sound(CreateAudioObject(clips[3]), 20, '-', 4, '*', 3),
-            new Sound(CreateAudioObject(clips[4]), 6, '+', 3, '/', 2),
-            new Sound(CreateAudioObject(clips[5]), 10, '*', 5, '-', 7),
-            new Sound(CreateAudioObject(clips[6]), 30, '/', 3, '+', 15)
-        };
+        [SerializeField] private AudioClip[] clips;
+        [SerializeField] private Button phoneButton;
+        [SerializeField] private TMPro.TMP_Text inputText;
 
-    }
-    void Start()
-    {
-        Initialize();
-        SelectSounds();
-        WriteInput();
-        CalculateAnswer();
-        Debug.Log(answer);
-    }
+        private List<EntryphoneSound> sounds;
+        private List<EntryphoneSound> selectedSounds;
+        private string input = "";
+        private int answer = 0;
 
-    GameObject CreateAudioObject(AudioClip clip)
-    {
-        GameObject audioObject = new GameObject("Audio_" + clip.name);
-        AudioSource audioSource = audioObject.AddComponent<AudioSource>();
+        void Start()
+        {
+            Initialize();
+        }
 
-        audioSource.clip = clip;
-        audioSource.playOnAwake = false; 
+        public override void Initialize()
+        {
+            sounds = new List<EntryphoneSound>
+            {
+                new EntryphoneSound(clips[0], 8, new ArithmeticOperation('+', 4), new ArithmeticOperation('*', 2)),
+                new EntryphoneSound(clips[1], 12, new ArithmeticOperation('-', 6), new ArithmeticOperation('+', 5)),
+                new EntryphoneSound(clips[2], 15, new ArithmeticOperation('*', 2), new ArithmeticOperation('/', 5)),
+                new EntryphoneSound(clips[3], 20, new ArithmeticOperation('-', 4), new ArithmeticOperation('*', 3)),
+                new EntryphoneSound(clips[4], 6, new ArithmeticOperation('+', 3), new ArithmeticOperation('/', 2)),
+                new EntryphoneSound(clips[5], 10, new ArithmeticOperation('*', 5), new ArithmeticOperation('-', 7)),
+                new EntryphoneSound(clips[6], 30, new ArithmeticOperation('/', 3), new ArithmeticOperation('+', 15))
+            };
 
-        AudioManager.Instance.AddSound(audioObject);
-        return audioObject;
-    }
-    void SelectSounds()
-    {
-        selectedSounds = new List<Sound>();
-        List<Sound> randomSounds = new List<Sound>();
-        randomSounds.AddRange(sounds);
-        for (int i = 0; i < 3; i++)
-        {
-            int index = Random.Range(0, randomSounds.Count);
-            selectedSounds.Add(randomSounds[index]);
-            randomSounds.RemoveAt(index);
+            SelectSounds();
+            answer = CalculateAnswer();
+            WriteInput();
+            EditorLog.Log($"Entryphone answer: {answer}");
         }
-    }
-    IEnumerator PlaySequence()
-    {
-        foreach (Sound sound in selectedSounds)
-        {
-            AudioManager.Instance.PlaySound(sound.audioObject);
-            yield return new WaitForSeconds(sound.audioObject.GetComponent<AudioSource>().clip.length + .5f);
-        }
-        phoneButton.interactable = true;
-    }
-    public void PhoneButton()
-    {
-        StopAllCoroutines();
-        StartCoroutine(PlaySequence());
-        phoneButton.interactable = false;
-    }
-    void CalculateAnswer()
-    {
-        float value = selectedSounds[0].startingNumber;
-        value = selectedSounds[1].Operation1(value);
-        value = selectedSounds[2].Operation2(value);
-        answer = Mathf.FloorToInt(value);
-        answer = Mathf.Abs(answer);
-     } 
-    public void CheckAnswer()
-    {
-        if (input.Length <= 0)
-        {
-            OnFail();
-            return;
-        }
-        int inputAnswer = int.Parse(input);
-        CalculateAnswer();
-        if (answer == inputAnswer)
-        {
-            OnComplete();
-        }
-        else
-        {
-            OnFail();
-        }
-    }
-    public void Key(string key)
-    {
-        if (input.Length <= 3)
-        {
-            input += key;
-        }
-        WriteInput();
-    }
-    public void Reset()
-    {
-        input = "";
-        WriteInput();
-    }
-    void WriteInput()
-    {
-        inputText.text = "";
-        for (int i = 0; i < 3 - input.Length; i++)
-        {
-            inputText.text += "_";
-        }
-        inputText.text += input;
-    }
 
+        public void PhoneButton()
+        {
+            StopAllCoroutines();
+            StartCoroutine(PlaySequence());
+            phoneButton.interactable = false;
+        }
+
+        public void CheckAnswer()
+        {
+            if (int.TryParse(input, out int inputAnswer) && inputAnswer == answer)
+            {
+                OnComplete();
+            }
+            else
+            {
+                OnFail();
+            }
+        }
+
+        public void Key(string key)
+        {
+            if (input.Length < MaxInputLength)
+            {
+                input += key;
+            }
+            WriteInput();
+        }
+
+        public void ClearInput()
+        {
+            input = "";
+            WriteInput();
+        }
+
+        void SelectSounds()
+        {
+            List<EntryphoneSound> shuffledSounds = new List<EntryphoneSound>(sounds);
+            shuffledSounds.Shuffle();
+            selectedSounds = shuffledSounds.GetRange(0, SelectedSoundCount);
+        }
+
+        IEnumerator PlaySequence()
+        {
+            foreach (EntryphoneSound sound in selectedSounds)
+            {
+                AudioManager.Instance.PlayClip(sound.Clip);
+                yield return new WaitForSeconds(sound.Clip.length + PauseBetweenSoundsSeconds);
+            }
+            phoneButton.interactable = true;
+        }
+
+        int CalculateAnswer()
+        {
+            float value = selectedSounds[0].StartingNumber;
+            value = selectedSounds[1].FirstOperation.Apply(value);
+            value = selectedSounds[2].SecondOperation.Apply(value);
+            return Mathf.Abs(Mathf.FloorToInt(value));
+        }
+
+        void WriteInput()
+        {
+            inputText.text = input.PadLeft(MaxInputLength, EmptyInputCharacter);
+        }
+    }
 }

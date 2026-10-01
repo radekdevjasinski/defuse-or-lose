@@ -2,34 +2,36 @@ using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
 
-public class LetterField : MonoBehaviour
+namespace DefuseOrLose
 {
-    public TextMeshProUGUI letterText;
-    private List<char> availableLetters;
-    private int currentIndex = 0;
-    public char correctLetter { get; private set; }
-
-    public void Initialize(char correctLetter, List<char> pool)
+    public class LetterField : MonoBehaviour
     {
-        this.correctLetter = correctLetter;
-        availableLetters = new List<char>(pool);
-        
-        System.Random random = new System.Random();
-        currentIndex = random.Next(availableLetters.Count);
-        letterText.text = availableLetters[currentIndex].ToString();
+        [SerializeField] private TextMeshProUGUI letterText;
 
-    }
+        private List<char> availableLetters;
+        private int currentIndex = 0;
 
-    public void ChangeLetter(int direction)
-    {
-        char previousLetter = availableLetters[currentIndex];
-        currentIndex = (currentIndex + direction + availableLetters.Count) % availableLetters.Count;
-        char newLetter = availableLetters[currentIndex];
-        letterText.text = newLetter.ToString();
-    }
+        public void Initialize(List<char> letterPool)
+        {
+            availableLetters = new List<char>(letterPool);
+            currentIndex = Random.Range(0, availableLetters.Count);
+            ShowCurrentLetter();
+        }
 
-    public char GetCurrentLetter()
-    {
-        return availableLetters[currentIndex];
+        public void ChangeLetter(int direction)
+        {
+            currentIndex = (currentIndex + direction + availableLetters.Count) % availableLetters.Count;
+            ShowCurrentLetter();
+        }
+
+        public char GetCurrentLetter()
+        {
+            return availableLetters[currentIndex];
+        }
+
+        private void ShowCurrentLetter()
+        {
+            letterText.text = availableLetters[currentIndex].ToString();
+        }
     }
 }

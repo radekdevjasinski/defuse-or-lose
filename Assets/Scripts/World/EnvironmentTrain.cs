@@ -1,73 +1,68 @@
 using UnityEngine;
 using System.Collections;
-using UnityEngine.Rendering.Universal;
 
-public class EnvironmentBase : MonoBehaviour
+namespace DefuseOrLose
 {
-    protected Camera cameraRef;
-    public Light2D globalLight;
-    protected virtual void Start()
+    public class EnvironmentTrain : EnvironmentBase
     {
-        cameraRef = Camera.main;
-    }
-}
+        private const float MinTunnelIntervalOffset = -1f;
+        private const float MaxTunnelIntervalOffset = 5f;
 
-public class EnvironmentTrain : EnvironmentBase
-{
-    [SerializeField] private float minIntensity; 
-    [SerializeField] private float maxIntensity; 
-    [SerializeField] private float transitionDuration;
-    [SerializeField] private float tunnelInterval; 
-    [SerializeField] private float tunnelDuration;
-    [SerializeField] private float cameraShakeAmount;
-    [SerializeField] private float cameraShakeSpeed;
-    
-    private Transform cameraTransform; 
-    private Vector3 initialCameraPosition;
+        [SerializeField] private float minIntensity;
+        [SerializeField] private float maxIntensity;
+        [SerializeField] private float transitionDuration;
+        [SerializeField] private float tunnelInterval;
+        [SerializeField] private float tunnelDuration;
+        [SerializeField] private float cameraShakeAmount;
+        [SerializeField] private float cameraShakeSpeed;
 
-    protected override void Start()
-    {
-        base.Start();
-        StartCoroutine(TunnelEffectRoutine());
-        cameraTransform = cameraRef.transform;
-        initialCameraPosition = cameraTransform.localPosition;
-        StartCoroutine(CameraShakeRoutine());
+        private CameraController cameraController;
 
-    }
-    
-    private IEnumerator TunnelEffectRoutine()
-    {
-        while (true)
+        void Start()
         {
-            yield return new WaitForSeconds(tunnelInterval + Random.Range(-1f, 5f));
-            yield return StartCoroutine(ChangeLightIntensity(minIntensity));
-            yield return new WaitForSeconds(tunnelDuration);
-            yield return StartCoroutine(ChangeLightIntensity(maxIntensity));
+            cameraController = FindAnyObjectByType<CameraController>();
+            if (cameraController == null)
+            {
+                Debug.LogError("EnvironmentTrain: no CameraController in scene, camera shake is disabled.");
+            }
+            StartCoroutine(TunnelEffectRoutine());
         }
-    }
-    
-    private IEnumerator ChangeLightIntensity(float targetIntensity)
-    {
-        float startIntensity = globalLight.intensity;
-        float elapsedTime = 0f;
-        
-        while (elapsedTime < transitionDuration)
+
+        void Update()
         {
-            elapsedTime += Time.deltaTime;
-            globalLight.intensity = Mathf.Lerp(startIntensity, targetIntensity, elapsedTime / transitionDuration);
-            yield return null;
+            if (cameraController == null)
+                return;
+
+            float noiseTime = Time.time * cameraShakeSpeed;
+            float shakeOffsetX = Mathf.PerlinNoise(noiseTime, 0f) * cameraShakeAmount - (cameraShakeAmount / 2f);
+            float shakeOffsetY = Mathf.PerlinNoise(0f, noiseTime) * cameraShakeAmount - (cameraShakeAmount / 2f);
+            cameraController.ShakeOffset = new Vector3(shakeOffsetX, shakeOffsetY, 0f);
         }
-        
-        globalLight.intensity = targetIntensity;
-    }
-    private IEnumerator CameraShakeRoutine()
-    {
-        while (true)
+
+        private IEnumerator TunnelEffectRoutine()
         {
-            float shakeOffsetX = Mathf.PerlinNoise(Time.time * cameraShakeSpeed, 0f) * cameraShakeAmount - (cameraShakeAmount / 2f);
-            float shakeOffsetY = Mathf.PerlinNoise(0f, Time.time * cameraShakeSpeed) * cameraShakeAmount - (cameraShakeAmount / 2f);
-            cameraTransform.localPosition = initialCameraPosition + new Vector3(shakeOffsetX, shakeOffsetY, 0);
-            yield return null;
+            while (true)
+            {
+                yield return WaitForRandomizedInterval(tunnelInterval, MinTunnelIntervalOffset, MaxTunnelIntervalOffset);
+                yield return StartCoroutine(ChangeLightIntensity(minIntensity));
+                yield return new WaitForSeconds(tunnelDuration);
+                yield return StartCoroutine(ChangeLightIntensity(maxIntensity));
+            }
+        }
+
+        private IEnumerator ChangeLightIntensity(float targetIntensity)
+        {
+            float startIntensity = globalLight.intensity;
+            float elapsedTime = 0f;
+
+            while (elapsedTime < transitionDuration)
+            {
+                elapsedTime += Time.deltaTime;
+                globalLight.intensity = Mathf.Lerp(startIntensity, targetIntensity, elapsedTime / transitionDuration);
+                yield return null;
+            }
+
+            globalLight.intensity = targetIntensity;
         }
     }
 }

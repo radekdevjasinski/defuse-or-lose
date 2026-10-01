@@ -1759,7 +1759,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 8214319890568293524}
         m_TargetAssemblyTypeName: EntryphonePuzzle, Assembly-CSharp
-        m_MethodName: Reset
+        m_MethodName: ClearInput
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
