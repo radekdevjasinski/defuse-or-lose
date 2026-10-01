@@ -52,7 +52,7 @@ Some graphics and sounds come from pixabay.com (CC0 licence). The 8-bit sounds w
 ### 6. How to run
 Download the built game from the *Releases* tab and start it with *Defuse or Lose.exe*. The manual is required to play and sits in the root of this repository:
 - [Manual Defuse or Lose (EN).pdf](<Manual Defuse or Lose (EN).pdf>) - English
-- [Manual Defuse or Lose.pdf](<Manual Defuse or Lose.pdf>) - Polish
+- [Manual Defuse or Lose (PL).pdf](<Manual Defuse or Lose (PL).pdf>) - Polish
 
 ---
 
@@ -101,5 +101,5 @@ Niektóre grafiki i dźwięki pochodzą z pixabay.com (licencja CC0). Dźwięki 
 
 ### 6. Instrukcja uruchomienia
 Zbudowaną grę pobiera się z zakładki *Releases* i uruchamia przez *Defuse or Lose.exe*. Manual jest wymagany do rozgrywki i leży w katalogu głównym repozytorium:
-- [Manual Defuse or Lose.pdf](<Manual Defuse or Lose.pdf>) – po polsku
+- [Manual Defuse or Lose (PL).pdf](<Manual Defuse or Lose (PL).pdf>) – po polsku
 - [Manual Defuse or Lose (EN).pdf](<Manual Defuse or Lose (EN).pdf>) – po angielsku
