@@ -4,6 +4,13 @@ Radosław Jasiński, Jakub Kotwica
 
 [English](#english) | [Polski](#polski)
 
+![Cipher module on the bomb](docs/screenshots/cipher-module.png)
+
+| | |
+|---|---|
+| ![Main menu](docs/screenshots/main-menu.png) | ![Level select](docs/screenshots/level-select.png) |
+| ![Signal module in a tunnel during a storm](docs/screenshots/signal-module-tunnel.png) | ![Memory module during fallout](docs/screenshots/memory-module-fallout.png) |
+
 ---
 
 ## English
